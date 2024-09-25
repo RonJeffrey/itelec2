@@ -303,9 +303,10 @@
             $mail->isSMTP();
             $mail->SMTPDebug = 0;
             $mail->SMTPAuth = true;
-            $mail->SMTPSEcure = "tls";
-            $mail->Host = "smtp.gmail.com";
+            $mail->SMTPSEcure = 'tls';
+            $mail->Host = 'smtp.gmail.com';
             $mail->Port = 587;
+            $mail->isHTML();
             $mail->addAddress($email);
             $mail->Username = $smtp_email;
             $mail->Password = $smtp_password;
@@ -345,20 +346,20 @@
 
     if(isset($_POST['btn-signup']))
     {        
+        $_SESSION['not_verify_csrf_token'] = trim($_POST['csrf_token']);
         $_SESSION['not_verify_username'] = trim($_POST['username']);
         $_SESSION['not_verify_email'] = trim($_POST['email']);
         $_SESSION['not_verify_password'] = trim($_POST['password']);
 
         $email = trim($_POST['email']);
         $otp = rand(100000, 999999);
-
         $addAdmin = new ADMIN();
         $addAdmin->sendOtp($otp, $email);
     }
 
     if (isset($_POST['btn-verify']))
     {
-        $csrf_token = trim($_POST['csrf_token']);
+        $csrf_token = trim(string: $_POST['csrf_token']);
         $username =  $_SESSION['not_verify_username'];
         $email = $_SESSION['not_verify_email'];
         $password = $_SESSION['not_verify_password'];
