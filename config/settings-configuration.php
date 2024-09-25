@@ -28,27 +28,32 @@ class SystemConfig
     public function __construct()
     {
         $database = new Database();
-        $db = $database->dbConnection();
-        $this->conn = $db;
+        $this->conn = $database->dbConnection();
 
-        //Get Email Configuration
         $stmt = $this->runQuery("SELECT * FROM email_config");
-        $stmt->execute();
-        $email_config = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($stmt) {
+            $stmt->execute();
+            $email_config = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->smtp_password = $email_config['email'];
-        $this->smtp_password = $email_config['password'];
+            if ($email_config) {
+                $this->smtp_email = $email_config['email']; 
+                $this->smtp_password = $email_config['password'];
+            } else {
+                throw new Exception("Email configuration not found.");
+            }
+        } else {
+            throw new Exception("Failed to prepare the query.");
+        }
     }
-
 
     public function getSmtpEmail()
     {
         return $this->smtp_email;
-    }   
+    }
+
     public function getSmtpPassword()
     {
         return $this->smtp_password;
-
     }
 
     public function runQuery($sql)
