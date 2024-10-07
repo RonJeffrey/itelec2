@@ -7,7 +7,7 @@ include_once 'config/settings-configuration.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify OTP</title>
+    <title>Forgot Password</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -35,7 +35,7 @@ include_once 'config/settings-configuration.php';
             color: #333;
         }
 
-        input[type="number"] {
+        input[type="email"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -57,16 +57,25 @@ include_once 'config/settings-configuration.php';
         button:hover {
             background-color: #0056b3;
         }
+
+        .message {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Enter OTP</h1>
-        <form action="dashboard/admin/authentication/admin-class.php" method="POST">
+        <h1>Forgot Password</h1>
+        <form action="process-forgot-password.php" method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-            <input type="number" name="otp" placeholder="Enter OTP" required>
-            <button type="submit" name="btn-verify">VERIFY</button>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <button type="submit" name="btn-reset">Send Reset Link</button>
         </form>
+        <div class="message">
+            <p>We'll send you a link to reset your password.</p>
+        </div>
     </div>
 </body>
 </html>

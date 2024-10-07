@@ -1,23 +1,17 @@
 <?php
-    session_start();
-    include_once __DIR__.'/../database/dbconnection.php';
-    
-    //error reporting
-    ini_set('display_error', 1);
-    ini_set('display_startup_errors',1);
-    error_reporting(E_ALL);
+session_start();
+include_once __DIR__.'/../database/dbconnection.php';
 
-    //CSRF TOKEN
-    if(empty($_SESSION['csrf_token']))
-    {
-        $csrf_token = bin2hex(random_bytes(32));
-        $_SESSION['csrf_token'] = $csrf_token;
-    }
-    else
-    {
-        $csrf_token = $_SESSION['csrf_token'];
-    }
+// Error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+// CSRF TOKEN
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
 
 class SystemConfig
 {

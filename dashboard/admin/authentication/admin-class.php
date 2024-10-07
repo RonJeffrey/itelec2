@@ -225,7 +225,7 @@
 
             unset($_SESSION['csrf_token']);
 
-            $hash_password = md5($password);
+            $hash_password = md5(string: $password);
 
             $stmt = $this->runQuery('INSERT INTO user (username, email, password) VALUES (:username, :email, :password)');
             $exec = $stmt->execute(array
