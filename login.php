@@ -152,20 +152,26 @@ include_once 'config/settings-configuration.php';
 
     <div class="main-container">
         <div class="left-side">
-        <img src="src/img/PrimeStrength.png" alt="Company Logo" style="width: 80%; height: 80%;" onerror="alert('Image not found or path is incorrect')">
+            <img src="src/img/PrimeStrength.png" alt="Company Logo" style="width: 80%; height: 80%;" onerror="alert('Image not found or path is incorrect')">
         </div>
 
         <div class="right-side">
             <div class="container">
 
-                <h1>Register</h1>
+            <h1>Sign In</h1>
                 <form action="dashboard/admin/authentication/admin-class.php" method="POST">
-                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-                    <input type="text" name="username" placeholder="Username" required>
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(string: $csrf_token); ?>">
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="password" name="password" placeholder="Password" required>
-                    <button type="submit" name="btn-signup" class="button">Sign Up</button>
-                    <h5>Already have an account?<a href="login.php">Login here.</a></h5>
+                        <select name="role" required>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                
+                    <div class="button-group">
+                        <button type="submit" name="btn-signin" class="button">Sign In</button>
+                    </div>
+                    <h5>Forgot your password?<a href="pass-config/forgot-password.php">Click here.</a></h5>
                 </form>
             </div>
         </div>

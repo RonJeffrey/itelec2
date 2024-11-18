@@ -1,12 +1,9 @@
 <?php
-require_once __DIR__ . '/../GitHub/database/dbconnection.php';
-include_once __DIR__ . '/../GitHub/config/settings-configuration.php';
+require_once __DIR__ . '/../database/dbconnection.php';
+include_once __DIR__ . '/../config/settings-configuration.php';
 
-$token = filter_input(INPUT_GET, 'token', FILTER_SANITIZE_STRING);
+$token = filter_input(INPUT_GET, 'token');
 
-if (!$token) {
-    die("Invalid token.");
-}
 
 $token = trim($_POST["token"]);
 $token = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
@@ -33,20 +30,21 @@ if ($expiry_time <= $current_time) {
     die("Token has expired.");
 }
 
-// Validate the new password
 if ($_POST["password"] !== $_POST["password_confirmation"]) {
     die("Passwords must match.");
 }
 
-// Hash the new password
-$password_hash = md5($_POST["password"]); // Use md5 for hashing
+$password_hash = md5($_POST["password"]);
 
-// Prepare the update SQL statement
 $sql = "UPDATE user
         SET password = ?, reset_token_hash = NULL, reset_token_expires_at = NULL
         WHERE id = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->execute([$password_hash, $user["id"]]);
 
-echo "Password updated. You can now login.";
+echo "<script>
+                alert('Password updated. You can now login.');
+                window.location.href = '../';
+              </script>";
+        exit;
 ?>

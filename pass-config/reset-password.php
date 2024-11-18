@@ -2,7 +2,7 @@
 session_start();
 
 // Include the database connection
-require_once __DIR__ . "/../GitHub/database/dbconnection.php";
+require_once __DIR__ . "/../database/dbconnection.php";
 
 $token = filter_input(INPUT_GET, 'token', FILTER_SANITIZE_STRING);
 

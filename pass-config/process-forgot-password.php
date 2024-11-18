@@ -3,9 +3,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once __DIR__ . '/../GitHub/database/dbconnection.php';
-include_once __DIR__ . '/../GitHub/config/settings-configuration.php';
-require_once __DIR__ . '/../GitHub/src/vendor/autoload.php';
+require_once __DIR__ . '/../database/dbconnection.php';
+include_once __DIR__ . '/../config/settings-configuration.php';
+require_once __DIR__ . '/../src/vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -41,7 +41,10 @@ $stmt->execute([$email]);
 
 $user = $stmt->fetch();
 if (!$user) {
-    die("User not found.");
+    echo "<script>
+            alert('User not found.');
+          </script>";
+    exit;
 }
 $user_id = $user['id'];
 
@@ -65,16 +68,26 @@ if ($stmt->rowCount()) {
     $mail->addAddress($email);
     $mail->Subject = "Password Reset";
 
-    $mail->Body = "Click <a href=\"http://localhost/GitHub/reset-password.php?token=$token&id=$user_id\">HERE</a> to reset your password.";
+    $mail->Body = "Click <a href=\"http://localhost/GitHub/pass-config/reset-password.php?token=$token&id=$user_id\">HERE</a> to reset your password.";
 
     try {
         $mail->send();
-        echo "Message sent, please check your inbox.";
+        echo "<script>
+                alert('Message sent, please check your inbox.');
+                window.location.href = '../';
+              </script>";
+        exit;
     } catch (Exception $e) {
-        echo "Mailer Error: " . $mail->ErrorInfo;
+        echo "<script>
+                alert('Mailer Error: " . $mail->ErrorInfo . "');
+              </script>";
+        exit;
     }
 
 } else {
-    echo "No record updated. Please check if the email exists.";
+    echo "<script>
+            alert('No record updated. Please check if the email exists.');
+          </script>";
+    exit;
 }
 ?>
