@@ -230,7 +230,7 @@ class ADMIN
             exit;
         }
     }
-    public function adminSignin($email, $password, $csrf_token)
+    public function signin($email, $password, $csrf_token)
     {
         try {
             if (!isset($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
@@ -240,81 +240,39 @@ class ADMIN
 
             unset($_SESSION['csrf_token']);
 
-            // Check both email, status and type
-            $stmt = $this->conn->prepare("SELECT * FROM user WHERE email = :email AND status = :status AND type = :type");
-            $stmt->execute(array(":email" => $email, ":status" => "active", ":type" => "admin"));
+            $stmt = $this->conn->prepare("SELECT * FROM user WHERE email = :email AND status = :status");
+            $stmt->execute(array(":email" => $email, ":status" => "active"));
 
             if ($stmt->rowCount() == 1) {
                 $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($userRow['status'] == "active") {
-                    if ($userRow['password'] == md5($password)) {
-                        $activity = "Has Successfully signed in.";
-                        $user_id = $userRow['id'];
-                        $this->logs($activity, $user_id);
+                if ($userRow['password'] == md5($password)) {
+                    $activity = "Has Successfully signed in.";
+                    $user_id = $userRow['id'];
+                    $this->logs($activity, $user_id);
 
-                        $_SESSION['adminSession'] = $user_id;
+                    $_SESSION['adminSession'] = $user_id;
+
+                    if ($userRow['Type'] == "admin") {
                         echo "<script>alert('Welcome admin'); window.location.href = '../admin_dashboard.php';</script>";
-                        exit;
-                    } else {
-                        echo "<script>alert('Password is incorrect.'); window.location.href = '../../../';</script>";
-                        exit;
-                    }
-                } else {
-                    echo "<script>alert('Entered Email is not verified.'); window.location.href = '../../../';</script>";
-                    exit;
-                }
-            } else {
-                echo "<script>alert('No admin account found.'); window.location.href = '../../../';</script>";
-                exit;
-            }
-        } catch (PDOException $ex) {
-            echo $ex->getMessage();
-        }
-    }
-
-    public function userSignin($email, $password, $csrf_token)
-    {
-        try {
-            if (!isset($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
-                echo "<script>alert('Invalid CSRF Token.'); window.location.href = '../../../';</script>";
-                exit;
-            }
-
-            unset($_SESSION['csrf_token']);
-
-            $stmt = $this->conn->prepare("SELECT * FROM user WHERE email = :email AND status = :status AND type = :type");
-            $stmt->execute(array(":email" => $email, ":status" => "active", ":type" => "user"));
-
-            if ($stmt->rowCount() == 1) {
-                $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($userRow['status'] == "active") {
-                    if ($userRow['password'] == md5($password)) {
-                        $activity = "Has Successfully signed in.";
-                        $user_id = $userRow['id'];
-                        $this->logs($activity, $user_id);
-
-                        $_SESSION['adminSession'] = $user_id;
+                    } elseif ($userRow['Type'] == "user") {
                         echo "<script>alert('Welcome user'); window.location.href = '../user_dashboard.php';</script>";
-                        exit;
                     } else {
-                        echo "<script>alert('Password is incorrect.'); window.location.href = '../../../';</script>";
-                        exit;
+                        echo "<script>alert('Invalid user type.'); window.location.href = '../../../';</script>";
                     }
+                    exit;
                 } else {
-                    echo "<script>alert('Entered Email is not verified.'); window.location.href = '../../../';</script>";
+                    echo "<script>alert('Password is incorrect.'); window.location.href = '../../../';</script>";
                     exit;
                 }
             } else {
-                echo "<script>alert('No user account found.'); window.location.href = '../../../';</script>";
+                echo "<script>alert('No account found for this email.'); window.location.href = '../../../';</script>";
                 exit;
             }
         } catch (PDOException $ex) {
             echo $ex->getMessage();
         }
     }
-
-
 
 
     public function adminSignout()
@@ -354,13 +312,18 @@ class ADMIN
         if (isset($_SESSION['adminSession'])) {
             return true;
         }
+        return false;
     }
+
 
     public function redirect()
     {
-        echo "<script>alert('Admin must log in first'); window.location.href = '../../../';</script>";
-        exit;
+        if (!isset($_SESSION['adminSession'])) {
+            echo "<script>alert('Admin must log in first'); window.location.href = '../../../';</script>";
+            exit;
+        }
     }
+
 
     public function runQuery($sql)
     {
@@ -399,20 +362,10 @@ if (isset($_POST['btn-signin'])) {
     $csrf_token = trim($_POST['csrf_token']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-    $role = trim($_POST['role']);
 
     $admin = new ADMIN();
-
-    if ($role == "admin") {
-        $admin->adminSignin($email, $password, $csrf_token);
-    } elseif ($role == "user") {
-        $admin->userSignin($email, $password, $csrf_token);
-    } else {
-        echo "<script>alert('Invalid role specified.'); window.location.href = '../../../';</script>";
-    }
+    $admin->signin($email, $password, $csrf_token);
 }
-
-
 
 if (isset($_GET['admin_signout'])) {
     $adminSignout = new ADMIN();

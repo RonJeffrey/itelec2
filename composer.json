@@ -1,0 +1,7 @@
+{
+    "require": {
+        "paypal/paypal-server-sdk": "^0.6.0",
+        "paypal/rest-api-sdk-php": "^1.6",
+        "paypal/checkout-sdk-php": "^1.0"
+    }
+}

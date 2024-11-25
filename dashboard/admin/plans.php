@@ -19,6 +19,7 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
+    <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -164,10 +165,9 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
     <div class="sidebar">
         <h2>User Dashboard</h2>
         <a href="user_dashboard.php">Home</a>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
+        <a href="user_profile.php">Profile</a>
         <a href="plans.php">Membership Plans</a>
-        <a href="#">Notifications</a>
+        <a href="user_notif.php">Notifications</a>
         <a href="authentication/admin-class.php?admin_signout" class="logout-button">Sign Out</a>
     </div>
 
@@ -195,7 +195,7 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <li>✔️ Free WIFI</li>
                         <li>✔️ Free use of locker</li>
                     </ul>
-                    <a href="bronzemem.php" class="enroll-btn">ENROLL NOW</a>
+                    <a href="indexpp.php" class="enroll-btn">ENROLL NOW</a>
                 </div>
 
                 <div class="membership-card">
@@ -211,7 +211,7 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <li>✔️ Free use of hot/cold shower</li>
                         <li>✔️ Free 5 guest pass</li>
                     </ul>
-                    <a href="silvermem.php" class="enroll-btn">ENROLL NOW</a>
+                    <a href="indexpp.php" class="enroll-btn">ENROLL NOW</a>
                 </div>
 
                 <div class="membership-card">
@@ -229,7 +229,7 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
                         <li>✔️ Free parking space</li>
                         <li>✔️ Free group classes (Zumba, Pilates, Yoga)</li>
                     </ul>
-                    <a href="goldmem.php" class="enroll-btn">ENROLL NOW</a>
+                    <a href="indexpp.php" class="enroll-btn">ENROLL NOW</a>
                 </div>
             </div>
 

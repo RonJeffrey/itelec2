@@ -18,6 +18,7 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
+    <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -109,10 +110,9 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
     <div class="sidebar">
         <h2>User Dashboard</h2>
         <a href="user_dashboard.php">Home</a>
-        <a href="#">Profile</a>
-        <a href="#">Settings</a>
+        <a href="user_profile.php">Profile</a>
         <a href="plans.php">Membership Plans</a>
-        <a href="#">Notifications</a>
+        <a href="user_notif.php">Notifications</a>
         <a href="authentication/admin-class.php?admin_signout" class="logout-button">Sign Out</a>
     </div>
 

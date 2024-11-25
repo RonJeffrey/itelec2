@@ -9,7 +9,9 @@ include_once 'config/settings-configuration.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authentication</title>
+    <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
     <style>
+        /* Existing Styles */
         * {
             margin: 0;
             padding: 0;
@@ -157,21 +159,15 @@ include_once 'config/settings-configuration.php';
 
         <div class="right-side">
             <div class="container">
-
-            <h1>Sign In</h1>
+                <h1>Sign In</h1>
                 <form action="dashboard/admin/authentication/admin-class.php" method="POST">
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(string: $csrf_token); ?>">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="password" name="password" placeholder="Password" required>
-                        <select name="role" required>
-                        <option value="admin">Admin</option>
-                        <option value="user">User</option>
-                    </select>
-                
                     <div class="button-group">
                         <button type="submit" name="btn-signin" class="button">Sign In</button>
                     </div>
-                    <h5>Forgot your password?<a href="pass-config/forgot-password.php">Click here.</a></h5>
+                    <h5>Forgot your password? <a href="pass-config/forgot-password.php">Click here.</a></h5>
                 </form>
             </div>
         </div>
