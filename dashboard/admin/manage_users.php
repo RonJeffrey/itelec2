@@ -26,6 +26,13 @@ if (!$emailConfig) {
     $emailConfig = [];
 }
 
+// Logout
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header("Location: ../../");
+    exit();
+}
+
 // Send Announcement to All Users
 if (isset($_POST['send_announcement'])) {
     $announcement = trim($_POST['announcement']);
