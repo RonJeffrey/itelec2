@@ -223,10 +223,10 @@ class ADMIN
         ));
 
         if ($exec) {
-            echo "<script>alert('Admin Added Successfully'); window.location.href = '../../../';</script>";
+            echo "<script>alert('User Added Successfully'); window.location.href = '../../../';</script>";
             exit;
         } else {
-            echo "<script>alert('Error Adding Admin.'); window.location.href = '../../../';</script>";
+            echo "<script>alert('Error Adding User.'); window.location.href = '../../../';</script>";
             exit;
         }
     }
