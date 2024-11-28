@@ -11,13 +11,10 @@
 </head>
 <body>
 <main id="cart-main">
-
     <div class="site-title text-center">
         <div><img src="./assets/checked.png" alt=""></div>
         <h1 class="font-title">Payment Done Successfully...!</h1>
     </div>
-
 </main>
-
 </body>
 </html>

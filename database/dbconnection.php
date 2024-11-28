@@ -40,8 +40,5 @@
             return $this->conn;
         }
     }
-
-    // Initialize $db
-$database = new Database();
-$db = $database->dbConnection();
+    
 ?>
