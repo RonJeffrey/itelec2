@@ -91,19 +91,20 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
             background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
         }
         .content h2 {
-            font-size: 1.2em;
+            font-size: 1.4em;
             margin-bottom: 15px;
         }
         .card {
-            background-color: #007bff;
+            background-color: #2c3e50;
             color: #fff;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             text-align: center;
+            font-size: 20px;
         }
         .membership-container {
             display: flex;
@@ -118,12 +119,16 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
         .membership-card {
             background-color: #fff;
             width: 300px;
+            height: 400px;
             padding: 20px;
             text-align: center;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             flex: 1;
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .membership-title {
             font-size: 1.5em;
@@ -149,14 +154,15 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
             text-align: left;
         }
         .enroll-btn {
-            background-color: #007bff;
+            background-color: #2c3e50;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
             font-weight: bold;
             border-radius: 5px;
             display: inline-block;
-            margin-top: 20px;
+            margin-top: auto;
+            align-self: center;
         }
     </style>
 </head>

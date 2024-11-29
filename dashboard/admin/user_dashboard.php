@@ -61,12 +61,16 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
             flex-direction: column;
             padding: 20px;
             overflow-y: auto;
+            background-color: white;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            color: #000000; 
+            padding: 20px;
+            border-radius: 10px;
         }
         .header h1 {
             margin: 0;
@@ -90,20 +94,23 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
             background: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
         }
         .content h2 {
-            font-size: 1.2em;
+            font-size: 1.4em;
             margin-bottom: 15px;
+            color: #000000;
         }
         .card {
-            background-color: #007bff;
+            background-color: #2c3e50;
             color: #fff;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             text-align: center;
+            font-size: 20px;
         }
+     }
     </style>
 </head>
 <body>
