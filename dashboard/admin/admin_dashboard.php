@@ -8,6 +8,7 @@ if (!$admin->isUserLoggedIn()) {
     $admin->redirect('../../');
 }
 
+// Fetch all users
 $stmt = $admin->runQuery("SELECT * FROM user");
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -15,22 +16,29 @@ if (!$users) {
     $users = [];
 }
 
+// Fetch email configuration
 $stmt = $admin->runQuery("SELECT * FROM email_config");
 $stmt->execute();
 $emailConfig = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 if (!$emailConfig) {
     $emailConfig = [];
 }
 
+// Create User
 if (isset($_POST['create_user'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
 
-    $stmt = $admin->runQuery("INSERT INTO user (username, email, password, role) VALUES (:username, :email, :password, :role)");
-    $stmt->execute([':username' => $username, ':email' => $email, ':password' => $password, ':role' => $role]);
+    $stmt = $admin->runQuery("INSERT INTO user (username, email, password, Type) VALUES (:username, :email, :password, :role)");
+    $stmt->execute([
+        ':username' => $username,
+        ':email' => $email,
+        ':password' => $password,
+        ':role' => $role
+    ]);
+
     header("Location: admin_dashboard.php");
     exit();
 }
@@ -43,7 +51,12 @@ if (isset($_POST['update_user'])) {
     $role = $_POST['role'];
 
     $stmt = $admin->runQuery("UPDATE user SET username = :username, email = :email, Type = :role WHERE id = :id");
-    $stmt->execute([':username' => $username, ':email' => $email, ':role' => $role, ':id' => $id]);
+    $stmt->execute([
+        ':username' => $username,
+        ':email' => $email,
+        ':role' => $role,
+        ':id' => $id
+    ]);
 
     $_SESSION['update_success'] = true;
     header("Location: admin_dashboard.php");
@@ -55,6 +68,7 @@ if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
     $stmt = $admin->runQuery("DELETE FROM user WHERE id = :id");
     $stmt->execute([':id' => $id]);
+
     header("Location: admin_dashboard.php");
     exit();
 }
@@ -267,115 +281,64 @@ if (isset($_POST['logout'])) {
     </form>
 </div>
 
+<div class="content">
+    <h1>User Management</h1>
 
-    <div class="content">
-        <h1>User Management</h1>
+    <form method="POST" action="">
+        <h3>Create New User</h3>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="role" required>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+        </select>
+        <button type="submit" name="create_user" class="btn">Create User</button>
+    </form>
 
-        <form method="POST" action="">
-            <h3>Create New User</h3>
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <select name="role" required>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-            </select>
-            <button type="submit" name="create_user" class="btn">Create User</button>
-        </form>
-
-        <h2>SMTP Email Configuration</h2>
-        <table>
-            <tr>
-                <th>Email</th>
-                <th>Password</th>
-                <th>Actions</th>
-            </tr>
-            <?php if (!empty($emailConfig)): ?>
-                <?php foreach ($emailConfig as $config): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($config['email']); ?></td>
-                        <td><?php echo htmlspecialchars($config['password']); ?></td>
-                        <td>
-                            <button onclick="document.getElementById('editModal<?php echo $config['id']; ?>').classList.add('active');" class="btn">Edit</button>
-                        </td>
-                    </tr>
-
-                    <div id="editModal<?php echo $config['id']; ?>" class="modal">
-                        <h3>Edit Email Configuration</h3>
-                        <form method="POST" action="">
-                            <input type="hidden" name="id" value="<?php echo $config['id']; ?>">
-                            <input type="email" name="email" value="<?php echo htmlspecialchars($config['email']); ?>" required>
-                            <input type="text" name="password" value="<?php echo htmlspecialchars($config['password']); ?>" required>
-                            <button type="submit" name="update_email_config" class="btn">Update Email Config</button>
-                            <button type="button" onclick="document.getElementById('editModal<?php echo $config['id']; ?>').classList.remove('active');" class="btn btn-danger">Cancel</button>
-                        </form>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
+    <h2>List of Users</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        <?php if (!empty($users)): ?>
+            <?php foreach ($users as $user): ?>
                 <tr>
-                    <td colspan="3">No email configuration found</td>
+                    <td><?php echo $user['id']; ?></td>
+                    <td><?php echo htmlspecialchars($user['username']); ?></td>
+                    <td><?php echo htmlspecialchars($user['email']); ?></td>
+                    <td><?php echo htmlspecialchars($user['Type']); ?></td>
+                    <td>
+                        <button onclick="document.getElementById('editModal<?php echo $user['id']; ?>').classList.add('active');" class="btn">Edit</button>
+                        <a href="?delete_id=<?php echo $user['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                    </td>
                 </tr>
-            <?php endif; ?>
-        </table>
 
-        <h2>List of Users</h2>
-        <table>
+                <div class="modal" id="editModal<?php echo $user['id']; ?>">
+                    <h3>Edit User</h3>
+                    <form method="POST" action="">
+                        <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
+                        <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                        <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                        <select name="role" required>
+                            <option value="admin" <?php echo ($user['Type'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
+                            <option value="user" <?php echo ($user['Type'] == 'user') ? 'selected' : ''; ?>>User</option>
+                        </select>
+                        <button type="submit" name="update_user" class="btn">Save Changes</button>
+                        <button type="button" onclick="document.getElementById('editModal<?php echo $user['id']; ?>').classList.remove('active')">Close</button>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
             <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
+                <td colspan="5">No users found</td>
             </tr>
-            <?php if (!empty($users)): ?>
-                <?php foreach ($users as $user): ?>
-                    <tr>
-                        <td><?php echo $user['id']; ?></td>
-                        <td><?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></td>
-                        <td><?php echo htmlspecialchars($user['email'] ?? 'N/A'); ?></td>
-                        <td><?php echo isset($user['Type']) && !empty($user['Type']) ? htmlspecialchars($user['Type']) : 'N/A'; ?>
-                        </td>
-                        <td>
-                            <button
-                                onclick="document.getElementById('editModal<?php echo $user['id']; ?>').classList.add('active');"
-                                class="btn">Edit</button>
-                            <a href="?delete_id=<?php echo $user['id']; ?>" class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
-                        </td>
-                    </tr>
-
-                    <div class="modal" id="editModal<?php echo $user['id']; ?>">
-                        <h3>Edit User</h3>
-                        <form method="POST" action="">
-                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($user['id']); ?>">
-                            <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>"
-                                required>
-                            <input type="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
-                            <select name="role" required>
-                                <option value="admin" <?php echo ($user['role'] == 'admin') ? 'selected' : ''; ?>>Admin</option>
-                                <option value="user" <?php echo ($user['role'] == 'user') ? 'selected' : ''; ?>>User</option>
-                            </select>
-                            <button type="submit" name="update_user" class="btn">Save Changes</button>
-                            <button type="button"
-                                onclick="document.getElementById('editModal<?php echo $user['id']; ?>').classList.remove('active')">Close</button>
-                        </form>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5">No users found</td>
-                </tr>
-            <?php endif; ?>
-        </table>
-    </div>
-
-    <script>
-        function deleteUser(id) {
-            if (confirm('Are you sure you want to delete this user?')) {
-                window.location.href = 'admin_dashboard.php?delete_id=' + id;
-            }
-        }
-    </script>
+        <?php endif; ?>
+    </table>
+</div>
 </body>
-
 </html>
