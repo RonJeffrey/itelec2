@@ -288,7 +288,7 @@ class ADMIN
         $mail->isSMTP();
         $mail->SMTPDebug = 0;
         $mail->SMTPAuth = true;
-        $mail->SMTPSEcure = 'tls';
+        $mail->SMTPSecure = 'tls';
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 587;
         $mail->isHTML();

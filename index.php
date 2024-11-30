@@ -24,40 +24,41 @@
         }
 
         .navbar {
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: #000;
+            padding: 15px 20px;
+            color: white;
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
             z-index: 1000;
+            box-sizing: border-box;
         }
 
         .navbar .logo {
-            font-size: 1.8em;
-            font-weight: 600;
-            filter: grayscale(100%);
+            font-size: 1.5em;
+            font-weight: bold;
+            white-space: nowrap;
         }
 
-        .navbar .nav-links {
+        .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .navbar .nav-links a {
-            color:red;
+        .nav-links a {
+            color: white;
             text-decoration: none;
             font-size: 1em;
-            padding: 5px 15px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
+            padding: 8px 12px;
         }
 
-        .navbar .nav-links a:hover {
-            background-color: #555;
+        .nav-links a:hover {
+            color: #ff4500;
         }
 
         .main-container {
@@ -134,23 +135,22 @@
         }
 
         .button {
-             width: 100%;
-             padding: 10px;
-             background-color:white;
-             border: none;
-             border-radius: 4px;
-             color: black;
-             font-size: 1em;
+            width: 100%;
+            padding: 10px;
+            background-color: white;
+            border: none;
+            border-radius: 4px;
+            color: black;
+            font-size: 1em;
             font-weight: 600;
-             cursor: pointer;
-             transition: all 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .button:hover {
             background-color: #800000;
             color: black;
-        }      
-
+        }
 
         h5 {
             margin-top: 15px;
@@ -174,7 +174,7 @@
         <div class="logo">PrimeStrength</div>
         <div class="nav-links">
             <a href="memplans.php">MEMBERSHIP PLANS</a>
-            <a href="#">CONTACT</a>
+            <a href="contact.php">CONTACT</a>
             <a href="login.php">LOGIN</a>
         </div>
     </div>
