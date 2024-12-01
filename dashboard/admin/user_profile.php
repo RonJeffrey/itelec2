@@ -14,7 +14,6 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updated_name = $_POST['name'];
     $updated_email = $_POST['email'];
-    $updated_password = $_POST['password'];
     $updated_age = $_POST['age'];
     $updated_weight = $_POST['weight'];
     $updated_height = $_POST['height'];
@@ -29,11 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bmi = null;
     }
 
-    $stmt = $admin->runQuery("UPDATE user SET username = :username, email = :email, password = :password, age = :age, weight = :weight, height = :height, bmi = :bmi, address = :address, contact_number = :contact_number WHERE id = :id");
+    $stmt = $admin->runQuery("UPDATE user SET username = :username, email = :email, age = :age, weight = :weight, height = :height, bmi = :bmi, address = :address, contact_number = :contact_number WHERE id = :id");
     $stmt->execute(array(
         ":username" => $updated_name,
         ":email" => $updated_email,
-        ":password" => password_hash($updated_password, PASSWORD_BCRYPT),
         ":age" => $updated_age,
         ":weight" => $updated_weight,
         ":height" => $updated_height,
@@ -235,10 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="email">Email Address</label>
                     <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user_data['email'] ?? ''); ?>" required>
                 </div>
-                <div class="form-group">
-                    <label for="password">New Password</label>
-                    <input type="password" name="password" id="password" placeholder="Enter new password">
-                </div>
 
                 <h4>Others</h4>
                 <div class="form-group">
@@ -285,6 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>
         function showModal(event) {
             event.preventDefault();
+            location.reload();
             document.getElementById('successModal').style.display = 'block';
         }
 

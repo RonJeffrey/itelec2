@@ -14,17 +14,25 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 $stmt = $admin->runQuery("SELECT * FROM notifications ORDER BY created_at DESC");
 $stmt->execute();
 $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt = $admin->runQuery("SELECT * FROM transactions WHERE login_email = :email ORDER BY created_at DESC LIMIT 1");
+$stmt->execute(array(":email" => $user_data['email']));
+$user_plan = $stmt->fetch(PDO::FETCH_ASSOC);
+$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'You are not subscribe to any gym membership plan.';
+$current_billing_cycle = $user_plan ? htmlspecialchars($user_plan['billing_cycle']) : '';
+$current_plan_display = ($current_plan !== 'You are not subscribe to any gym membership plan.') ? "$current_plan ($current_billing_cycle)" : 'You are not subscribe to any gym membership plan.';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
     <style>
-       body {
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             display: flex;
@@ -177,6 +185,7 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
+
 <body>
     <div class="sidebar">
         <h2>User Dashboard</h2>
@@ -189,23 +198,28 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="main-content">
         <div class="header">
-            <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?></h1>
+            <h1>Welcome, <?php echo htmlspecialchars(string: $user_data['email']); ?></h1>
+            <h1>Current Plan: [<?php echo $current_plan; ?>]<?php echo $current_billing_cycle; ?></h1>
         </div>
         <div class="content">
             <h2>Dashboard Overview</h2>
             <div class="card">
-                <p>Welcome to your dashboard. Here you can manage your profile, view notifications, and explore more features.</p>
+                <p>Welcome to your dashboard. Here you can manage your profile, view notifications, and explore more
+                    features.</p>
             </div>
 
             <div class="card">
                 <h3>Latest Notifications:</h3>
                 <?php if (count($notifications) > 0): ?>
                     <ul>
-                        <?php foreach ($notifications as $notification): ?>
-                            <li><strong>Announcement:</strong> <?php echo htmlspecialchars($notification['message']); ?> <br>
-                            <small>Posted on: <?php echo $notification['created_at']; ?></small></li>
-                            <hr>
-                        <?php endforeach; ?>
+                        <?php
+                        foreach ($notifications as $notification) {
+                            echo '<li>';
+                            echo '<p>' . htmlspecialchars($notification['message']) . '</p>';
+                            echo '<small>Posted on: ' . $notification['created_at'] . '</small>';
+                            echo '</li>';
+                        }
+                        ?>
                     </ul>
                 <?php else: ?>
                     <p>No announcements at the moment.</p>
@@ -214,4 +228,5 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 </body>
+
 </html>

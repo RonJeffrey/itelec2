@@ -51,6 +51,7 @@ if (isset($_POST['send_announcement'])) {
             $mail = new PHPMailer(true);
 
             try {
+                // Send Email to All Users
                 $mail->isSMTP();
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = true;
@@ -69,7 +70,13 @@ if (isset($_POST['send_announcement'])) {
                 }
 
                 $mail->send();
-                echo "<script>alert('Announcement sent successfully!');</script>";
+
+                // Insert the announcement into the notifications table
+                $stmt = $admin->runQuery("INSERT INTO notifications (message) VALUES (:message)");
+                $stmt->bindParam(':message', $announcement);
+                $stmt->execute();
+
+                echo "<script>alert('Announcement sent and posted in notifications successfully!');</script>";
             } catch (Exception $e) {
                 echo "<script>alert('Error sending email: " . $mail->ErrorInfo . "');</script>";
             }
@@ -273,16 +280,14 @@ if (isset($_POST['send_individual'])) {
 
         <h1>Send Individual Email</h1>
         <form method="POST" action="">
-            <label for="user_email">Select User:</label>
-            <select name="user_email" id="user_email">
-                <?php foreach ($users as $user): ?>
-                    <option value="<?php echo htmlspecialchars($user['email']); ?>">
-                        <?php echo htmlspecialchars($user['username']); ?> (<?php echo htmlspecialchars($user['email']); ?>)
-                    </option>
-                <?php endforeach; ?>
+            <select name="user_email">
+                <option value="">Select a user</option>
+                <?php foreach ($users as $user) { ?>
+                    <option value="<?php echo $user['email']; ?>"><?php echo $user['email']; ?></option>
+                <?php } ?>
             </select>
             <textarea name="message" placeholder="Write your message here..." rows="5"></textarea>
-            <button type="submit" name="send_individual">Send to User</button>
+            <button type="submit" name="send_individual">Send Email</button>
         </form>
     </div>
 </body>

@@ -1,32 +1,113 @@
 <?php
 require_once 'authentication/admin-class.php';
+
 $admin = new ADMIN();
+
+if (!$admin->isUserLoggedIn()) {
+    $admin->redirect('../../');
+}
 
 $stmt = $admin->runQuery("SELECT * FROM user WHERE id = :id");
 $stmt->execute(array(":id" => $_SESSION['adminSession']));
 $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stmt = $admin->runQuery("SELECT * FROM transactions WHERE login_email = :email ORDER BY created_at DESC LIMIT 1");
+$stmt->execute(array(":email" => $user_data['email']));
+$user_plan = $stmt->fetch(PDO::FETCH_ASSOC);
+$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'No Plan';
+$current_billing_cycle = $user_plan ? htmlspecialchars($user_plan['billing_cycle']) : '';
+$current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current_billing_cycle)" : 'No Plan';
+
 ?>
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Paypal Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Subscription</title>
+    <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Lato&family=Nunito:wght@300&display=swap");
 
         body {
             font-family: 'Nunito', sans-serif;
-            position: relative;
-            z-index: 1;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f4f4f4;
         }
 
-        *>* {
-            margin: 0%;
-            padding: 0%;
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+        }
+
+        .sidebar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 1em;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .logout-button {
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
         }
 
         .container {
@@ -42,37 +123,6 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         .text-center {
             text-align: center;
-        }
-
-        .text-white {
-            color: white;
-        }
-
-        .text-gray {
-            color: #e9ecef;
-        }
-
-        .font-title {
-            font-family: 'Lato', sans-serif;
-        }
-
-        .item {
-            border-top: 1px solid #e9ecef;
-            border-bottom: 1px solid #e9ecef;
-            padding: 1.5em 3em;
-            margin: 1em 0;
-        }
-
-        .price {
-            color: #ef476f;
-            font-size: 1.5em;
-            margin-top: 1em;
-        }
-
-        .flex {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
         }
 
         .plan-selector {
@@ -111,7 +161,6 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         #paypal-payment-button {
             margin-top: 2rem;
-            z-index: 1;
         }
 
         .modal {
@@ -145,158 +194,166 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
             cursor: pointer;
             margin-top: 20px;
         }
-
-        .modal button:hover {
-            background-color: #d13a58;
-        }
     </style>
 </head>
 
 <body>
-    <main id="cart-main">
-        <div class="site-title text-center">
+    <div class="sidebar">
+        <h2>User Dashboard</h2>
+        <a href="user_dashboard.php">Home</a>
+        <a href="user_profile.php">Profile</a>
+        <a href="plans.php">Membership Plans</a>
+        <a href="user_notif.php">Notifications</a>
+        <a href="authentication/admin-class.php?admin_signout" class="logout-button">Sign Out</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
             <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?></h1>
-            <h1 class="font-title">Choose Your Subscription</h1>
+            <h1>Current Plan: [<?php echo $current_plan; ?>]<?php echo $current_billing_cycle; ?></h1>
+
         </div>
-
-        <div class="container">
-            <div class="item">
-                <div class="text-center">
-                    <h3>Subscription Plans</h3>
-
+        <main id="cart-main">
+            <div class="container">
+                <div class="item text-center">
+                    <h3>Choose Your Subscription</h3>
                     <div class="plan-selector">
-                        <label>
-                            <input type="radio" name="plan" value="bronze" onclick="updatePrice('bronze')" checked>
-                            Bronze Plan
-                        </label>
-                        <label>
-                            <input type="radio" name="plan" value="silver" onclick="updatePrice('silver')">
-                            Silver Plan
-                        </label>
-                        <label>
-                            <input type="radio" name="plan" value="gold" onclick="updatePrice('gold')">
-                            Gold Plan
-                        </label>
+                        <label><input type="radio" name="plan" value="Bronze" onclick="updatePrice('bronze')" checked>
+                            Bronze</label>
+                        <label><input type="radio" name="plan" value="Silver" onclick="updatePrice('silver')">
+                            Silver</label>
+                        <label><input type="radio" name="plan" value="Gold" onclick="updatePrice('gold')"> Gold</label>
                     </div>
-
                     <div class="subscription-options">
-                        <label for="billing-cycle">Choose Billing Cycle:</label>
+                        <label for="billing-cycle">Billing Cycle:</label>
                         <select id="billing-cycle" onchange="updatePrice()">
-                            <option value="daily">Daily</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="annual">Annual</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Annual">Annual</option>
                         </select>
                     </div>
-
                     <div class="plan-info">
                         <p>Your selected plan: <span id="plan-name">Bronze Plan</span></p>
-                        <p>Your selected billing cycle: <span id="billing-cycle-name">Daily</span></p>
+                        <p>Billing cycle: <span id="billing-cycle-name">Daily</span></p>
                         <p>Price: <span id="plan-price" class="text-red">$1</span></p>
                     </div>
+                    <div id="paypal-payment-button"></div>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <div class="text-center">
-                <div id="paypal-payment-button"></div>
-            </div>
-        </div>
-    </main>
-
+    <!-- Success Modal -->
     <div id="success-modal" class="modal">
         <div class="modal-content">
-            <h3>Transaction Successful</h3>
+            <h3>Success!</h3>
             <p id="success-message"></p>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <h3>Error!</h3>
+            <p id="error-message"></p>
             <button onclick="closeModal()">Close</button>
         </div>
     </div>
 
     <script
         src="https://www.paypal.com/sdk/js?client-id=AbK55LvlOsjjx2fGcNmroImu7SCw_S7Z4E8iK73Hsrn9h9X5E-hiYfo3GZPsUD3n0UFiHpZMgxwtsqSb&disable-funding=credit,card"></script>
-        <script>
+    <script>
+        function capitalizeFirstLetter(string) {
+            if (typeof string !== 'string' || string.length === 0) {
+                return string;
+            }
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+        }
 
-    const prices = {
-        bronze: { daily: 1, monthly: 1.5, annual: 1.75 },
-        silver: { daily: 2, monthly: 2.25, annual: 2.5 },
-        gold: { daily: 3, monthly: 3.25, annual: 3.5 }
-    };
+        const prices = {
+            bronze: { Daily: 1, Monthly: 1.5, Annual: 1.75 },
+            silver: { Daily: 2, Monthly: 2.25, Annual: 2.5 },
+            gold: { Daily: 3, Monthly: 3.25, Annual: 3.5 }
+        };
 
-    let currentPlan = 'bronze';
-    let currentBillingCycle = 'daily';
-    let currentPrice = prices[currentPlan][currentBillingCycle];
+        let currentPlan = 'bronze';
+        let currentBillingCycle = 'daily';
+        let currentPrice = prices[currentPlan][currentBillingCycle];
 
-    function updatePrice(plan = currentPlan) {
-        currentPlan = plan;
-        currentBillingCycle = document.getElementById('billing-cycle').value;
-        currentPrice = prices[currentPlan][currentBillingCycle];
+        function updatePrice(plan = currentPlan) {
+            currentPlan = plan;
+            currentBillingCycle = document.getElementById('billing-cycle').value;
+            currentPrice = prices[currentPlan][currentBillingCycle];
 
-        document.getElementById('plan-name').textContent = capitalizeFirstLetter(currentPlan) + ' Plan';
-        document.getElementById('billing-cycle-name').textContent = capitalizeFirstLetter(currentBillingCycle);
-        document.getElementById('plan-price').textContent = `$${currentPrice}`;
+            document.getElementById('plan-name').textContent = capitalizeFirstLetter(currentPlan) + ' Plan';
+            document.getElementById('billing-cycle-name').textContent = capitalizeFirstLetter(currentBillingCycle);
+            document.getElementById('plan-price').textContent = `$${currentPrice}`;
 
-        const paypalButtonContainer = document.getElementById('paypal-payment-button');
-        paypalButtonContainer.innerHTML = '';
+            const paypalButtonContainer = document.getElementById('paypal-payment-button');
+            paypalButtonContainer.innerHTML = '';
 
-        paypal.Buttons({
-            createOrder: function (data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: { value: currentPrice }
-                    }]
-                });
-            },
-            onApprove: function (data, actions) {
-                return actions.order.capture().then(function (details) {
-                    const transactionData = {
-                        payer_name: details.payer.name.given_name,
-                        payer_email: details.payer.email_address,
-                        amount: details.purchase_units[0].amount.value,
-                        transaction_id: details.id,
-                        plan: currentPlan,
-                        billing_cycle: currentBillingCycle
-                    };
+            paypal.Buttons({
+                createOrder: function (data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: currentPrice }
+                        }]
+                    });
+                },
+                onApprove: function (data, actions) {
+                    return actions.order.capture().then(function (details) {
+                        const transactionData = {
+                            payer_name: details.payer.name.given_name,
+                            payer_email: details.payer.email_address,
+                            amount: details.purchase_units[0].amount.value,
+                            transaction_id: details.id,
+                            plan: currentPlan,
+                            billing_cycle: currentBillingCycle
+                        };
 
-                    fetch('process_payment.php', {
-                        method: 'POST',
-                        body: JSON.stringify(transactionData),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                showSuccessPopup('Transaction completed by ' + details.payer.name.given_name);
-                            } else {
-                                showErrorPopup('Error logging transaction: ' + data.message);
+                        fetch('process_payment.php', {
+                            method: 'POST',
+                            body: JSON.stringify(transactionData),
+                            headers: {
+                                'Content-Type': 'application/json'
                             }
                         })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            showErrorPopup('An error occurred while logging the transaction');
-                        });
-                });
-            }
-        }).render('#paypal-payment-button');
-    }
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    showSuccessPopup('Transaction completed by ' + details.payer.name.given_name);
+                                } else {
+                                    showErrorPopup('Error logging transaction: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showErrorPopup('An error occurred while logging the transaction');
+                            });
+                    });
+                }
+            }).render('#paypal-payment-button');
+        }
 
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
 
-    function showSuccessPopup(message) {
-        document.getElementById('success-message').textContent = message;
-        const modal = document.getElementById('success-modal');
-        modal.style.display = 'block';
-    }
+        function showSuccessPopup(message) {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success-modal').style.display = 'block';
+        }
 
-    function closeModal() {
-        const modal = document.getElementById('success-modal');
-        modal.style.display = 'none';
-    }
+        function showErrorPopup(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-modal').style.display = 'block';
+        }
 
-    updatePrice();
-</script>
+        function closeModal() {
+            document.getElementById('success-modal').style.display = 'none';
+            document.getElementById('error-modal').style.display = 'none';
+        }
 
+        updatePrice();
+    </script>
 </body>
 
 </html>

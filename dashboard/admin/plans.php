@@ -10,6 +10,13 @@ if (!$admin->isUserLoggedIn()) {
 $stmt = $admin->runQuery("SELECT * FROM user WHERE id = :id");
 $stmt->execute(array(":id" => $_SESSION['adminSession']));
 $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stmt = $admin->runQuery("SELECT * FROM transactions WHERE login_email = :email ORDER BY created_at DESC LIMIT 1");
+$stmt->execute(array(":email" => $user_data['email']));
+$user_plan = $stmt->fetch(PDO::FETCH_ASSOC);
+$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'You are not subscribe to any gym membership plan.';
+$current_billing_cycle = $user_plan ? htmlspecialchars($user_plan['billing_cycle']) : '';
+$current_plan_display = ($current_plan !== 'You are not subscribe to any gym membership plan.') ? "$current_plan ($current_billing_cycle)" : 'You are not subscribe to any gym membership plan.';
 ?>
 
 <!DOCTYPE html>
@@ -180,6 +187,8 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
     <div class="main-content">
         <div class="header">
             <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?></h1>
+            <h1>Current Plan: [<?php echo $current_plan; ?>]<?php echo $current_billing_cycle; ?></h1>
+
         </div>
         <div class="content">
             <h2>Dashboard Overview</h2>
