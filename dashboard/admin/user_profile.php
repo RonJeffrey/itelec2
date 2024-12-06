@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile Settings</title>
     <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,16 +62,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f4f4f4;
             height: 100vh;
             overflow: hidden;
+            background-color: #610000;
+            
         }
 
         .sidebar {
             width: 250px;
-            background-color: #2c3e50;
+            background-color: rgba(0, 0, 0, 0.8);
             color: #ecf0f1;
             display: flex;
             flex-direction: column;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            
         }
 
         .sidebar h2 {
@@ -91,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .sidebar a:hover {
-            background-color: #34495e;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .main-content {
@@ -100,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flex-direction: column;
             padding: 20px;
             overflow-y: auto;
+            background-color: #610000;
         }
 
         .header {
@@ -205,17 +211,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .modal button:hover {
             background-color: #0056b3;
         }
+        .logo-membership {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .logo-membership img {
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            border-radius: 50%;
+        }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
+    <div class="logo-membership">
+                <img src="../../src/img/PrimeStrength_BlackWhite.png" alt="Company Logo" onerror="alert('Image not found or path is incorrect')">
+            </div>
         <h2>User Dashboard</h2>
-        <a href="user_dashboard.php">Home</a>
-        <a href="user_profile.php">Profile</a>
-        <a href="plans.php">Membership Plans</a>
-        <a href="user_notif.php">Notifications</a>
-        <a href="authentication/admin-class.php?admin_signout" class="logout-button">Sign Out</a>
+        <a href="user_dashboard.php"><i class='bx bxs-home'></i> Home</a>
+        <a href="user_profile.php"><i class='bx bxs-user' ></i> Profile</a>
+        <a href="plans.php"><i class='bx bx-id-card' ></i> Membership Plans</a>
+        <a href="user_notif.php"><i class='bx bxs-bell'></i> Notifications</a>
+        <a href="authentication/admin-class.php?admin_signout" class="logout-button"><i class='bx bx-log-out' ></i> Sign Out</a>
     </div>
 
     <div class="main-content">
