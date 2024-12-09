@@ -33,10 +33,10 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             font-family: Arial, sans-serif;
             margin: 0;
             display: flex;
-            background-color: #f4f4f4;
+            background-color: #181818;
             height: 100vh;
             overflow: hidden;
-            background: url("../../src/img/BlackRedEnergy.jpg") no-repeat center center/cover;
+          
             color: #fff;
         }
         .sidebar {
