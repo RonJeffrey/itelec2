@@ -169,6 +169,7 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         .membership-title {
+            text-align: center;
             font-size: 1.5em;
             color: #fff;
             margin-bottom: 10px;
@@ -194,6 +195,8 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             font-size: 2em;
             color: #fff;
             margin: 10px 0;
+            text-align: center;
+            margin-bottom: 10px;
         }
         .price small {
             font-size: 0.5em;
@@ -202,10 +205,14 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
         .features {
             list-style: none;
             padding: 0;
-            margin: 20px 0;
+            margin: 0;
             color: #fff;
             font-size: 1em;
             text-align: left;
+            flex-grow: 1;
+        }
+        .features li {
+            margin-bottom: 5px;
         }
         .enroll-btn {
             background-color: red;
@@ -268,7 +275,7 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             <div class="membership-container">
                 <div class="membership-card bronze">
                     <div class="membership-title">Bronze Membership</div>
-                    <div class="price">₱1500 <small>/mo</small></div>
+                    <div class="price">$1.50 <small>/mo</small></div><br>
                     <ul class="features">
                         <li>✔️ Unlimited use of gym equipment</li>
                         <li>✔️ Free health and fitness assessment</li>
@@ -281,7 +288,7 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
 
                 <div class="membership-card silver">
                     <div class="membership-title">Silver Membership</div>
-                    <div class="price">₱2000 <small>/mo</small></div>
+                    <div class="price">$2.50 <small>/mo</small></div><br>
                     <ul class="features">
                         <li>✔️ Unlimited use of gym equipment</li>
                         <li>✔️ Free health and fitness assessment</li>
@@ -297,7 +304,7 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
 
                 <div class="membership-card gold">
                     <div class="membership-title">Gold Membership</div>
-                    <div class="price">₱3000 <small>/mo</small></div>
+                    <div class="price">$3.25 <small>/mo</small></div><br>
                     <ul class="features">
                         <li>✔️ Unlimited use of gym equipment</li>
                         <li>✔️ Free health and fitness assessment</li>
