@@ -91,176 +91,193 @@ if (isset($_POST['logout'])) {
     <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #f4f4f4;
+}
 
-        .sidebar {
-            width: 215px;
-            height: 100vh;
-            background-color: #2C3E50;
-            color: #fff;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 20px;
-            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
-            transition: width 0.3s ease;
-        }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 24px;
-            font-weight: bold;
-        }
+.sidebar {
+    width: 215px;
+    height: 100vh;
+    background-color: #2c2c2c;
+    color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-shadow: 3px 0px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.6s ease;
+}
 
-        .sidebar a {
-            color: #fff;
-            text-decoration: none;
-            display: block;
-            margin: 15px 0;
-            padding: 12px 15px;
-            border-radius: 5px;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-        }
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #e74c3c;
+}
 
-        .sidebar a:hover {
-            background-color: #16A085;
-        }
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    margin: 15px 0;
+    padding: 12px 15px;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    position: relative;
+}
 
-        .sidebar a.active {
-            background-color: #1ABC9C;
-        }
+.sidebar a:hover {
+    background-color: #e74c3c;
+    transform: translateX(5px);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
 
-        .sidebar a i {
-            margin-right: 10px;
-            font-size: 20px;
-        }
+.sidebar a.active {
+    background-color: #e74c3c;
+}
 
-        .sidebar .logout-btn {
-            padding: 10px 15px;
-            background-color: #E74C3C;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-align: center;
-            width: 100%;
-            font-size: 16px;
-            margin-top: 20px;
-            transition: background-color 0.3s ease;
-        }
+.sidebar .logout-btn {
+    padding: 10px 15px;
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
 
-        .sidebar .logout-btn:hover {
-            background-color: #C0392B;
-        }
+.sidebar .logout-btn:hover {
+    background-color: #a93226;
+    transform: scale(1.05);
+}
 
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-            width: 100%;
-            background-color: #f4f4f4;
-            min-height: 100vh;
-        }
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    background-color: #ffffff;
+    min-height: 100vh;
+    animation: fadeIn 0.6s ease;
+}
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
+h1, h2 {
+    color: #333;
+    animation: fadeIn 0.8s ease;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    animation: fadeIn 0.8s ease;
+}
 
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
+table, th, td {
+    border: 1px solid #ddd;
+}
 
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-        }
+th {
+    background-color: #e74c3c;
+    color: #fff;
+    font-weight: bold;
+}
 
-        th {
-            background-color: #007bff;
-            color: #fff;
-        }
+td, th {
+    padding: 10px;
+    text-align: left;
+}
 
-        .btn {
-            display: inline-block;
-            padding: 5px 10px;
-            margin: 5px;
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+tr:hover {
+    background-color: #f8d7da;
+}
 
-        .btn:hover {
-            background-color: #0056b3;
-        }
+.btn {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 5px;
+    background-color: #e74c3c;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
 
-        .btn-danger {
-            background-color: #dc3545;
-        }
+.btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
+.btn-danger {
+    background-color: #b03a2e;
+}
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
+.btn-danger:hover {
+    background-color: #922b21;
+    transform: scale(1.05);
+}
 
-        input,
-        select {
-            margin-bottom: 10px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+input, select {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
 
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-        }
+input:focus, select:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+    outline: none;
+}
 
-        .form-group div {
-            flex: 1;
-            margin-right: 10px;
-        }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    animation: fadeIn 0.6s ease;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            border-radius: 5px;
-        }
+.modal.active {
+    display: block;
+}
 
-        .modal.active {
-            display: block;
-        }
+.modal h3 {
+    margin: 0 0 20px;
+    color: #333;
+}
 
-        .modal h3 {
-            margin: 0 0 20px;
-        }
     </style>
 </head>
 

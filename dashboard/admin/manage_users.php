@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'authentication/admin-class.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -150,19 +151,33 @@ if (isset($_POST['send_individual'])) {
             margin: 0;
             padding: 0;
             display: flex;
+            background-color: #f4f4f4;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .sidebar {
             width: 215px;
             height: 100vh;
-            background-color: #2C3E50;
+            background-color: #2c2c2c;
             color: #fff;
             position: fixed;
             top: 0;
             left: 0;
             padding: 20px;
-            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
-            transition: width 0.3s ease;
+            box-shadow: 3px 0px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease;
         }
 
         .sidebar h2 {
@@ -170,6 +185,7 @@ if (isset($_POST['send_individual'])) {
             margin-bottom: 30px;
             font-size: 24px;
             font-weight: bold;
+            color: #e74c3c;
         }
 
         .sidebar a {
@@ -180,25 +196,23 @@ if (isset($_POST['send_individual'])) {
             padding: 12px 15px;
             border-radius: 5px;
             font-size: 18px;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .sidebar a:hover {
-            background-color: #16A085;
+            background-color: #e74c3c;
+            transform: translateX(5px);
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar a.active {
-            background-color: #1ABC9C;
-        }
-
-        .sidebar a i {
-            margin-right: 10px;
-            font-size: 20px;
+            background-color: #e74c3c;
         }
 
         .sidebar .logout-btn {
             padding: 10px 15px;
-            background-color: #E74C3C;
+            background-color: #c0392b;
             color: white;
             border: none;
             border-radius: 5px;
@@ -206,50 +220,142 @@ if (isset($_POST['send_individual'])) {
             width: 100%;
             font-size: 16px;
             margin-top: 20px;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .sidebar .logout-btn:hover {
-            background-color: #C0392B;
+            background-color: #a93226;
+            transform: scale(1.05);
         }
 
         .content {
-            margin-left: 270px;
+            margin-left: 215px;
             padding: 20px;
             width: 100%;
-            background-color: #f4f4f4;
             min-height: 100vh;
+            background-color: #fff;
+
+            transition: margin-left 0.3s ease;
         }
 
         h1 {
             text-align: center;
             color: #333;
+
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         form {
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
 
         textarea,
         select {
             margin-bottom: 10px;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #ddd;
+
             border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+
+        }
+
+        textarea:focus,
+        select:focus {
+            border-color: #e74c3c;
+
+            outline: none;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #007bff;
+            padding: 12px 20px;
+            background-color: #e74c3c;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #c0392b;
+            transform: scale(1.05);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+
+        }
+
+        select {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        textarea {
+            font-size: 16px;
+            resize: vertical;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e74c3c;
+
+            cursor: pointer;
+        }
+
+        select:focus,
+        textarea:focus {
+            border-color: #333;
+
+            outline: none;
+        }
+
+        input[type="submit"] {
+            font-size: 18px;
+            padding: 12px;
+            background-color:#e74c3c;
+
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e74c3c;
+
+        }
+
+        textarea {
+            padding: 12px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e74c3c;
+        }
+
+        textarea {
+            padding: 12px;
+        }
+
+        select,
+        textarea {
+            max-width: 600px;
+            width: 100%;
         }
     </style>
 </head>
