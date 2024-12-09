@@ -68,7 +68,7 @@ if ($stmt->rowCount()) {
     $mail->addAddress($email);
     $mail->Subject = "Password Reset";
 
-    $mail->Body = "Click <a href=\"http://localhost/GitHub/pass-config/reset-password.php?token=$token&id=$user_id\">HERE</a> to reset your password.";
+    $mail->Body = "Click <a href=\"http://localhost/group2/itelec2/pass-config/reset-password.php?token=$token&id=$user_id\">HERE</a> to reset your password.";
 
     try {
         $mail->send();
