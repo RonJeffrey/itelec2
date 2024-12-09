@@ -36,7 +36,6 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             background-color: #181818;
             height: 100vh;
             overflow: hidden;
-          
             color: #fff;
         }
         .sidebar {
@@ -82,7 +81,7 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
         }
         .header h1 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 1.25em;
         }
         .logout-button {
             background-color: #dc3545;
