@@ -163,7 +163,7 @@
     <div class="membership-container">
         <div class="membership-card">
             <div class="membership-title">Bronze Membership</div>
-            <div class="price">₱1500 <small>/mo</small></div><br>
+            <div class="price">$1.50 <small>/mo</small></div><br>
             <ul class="features">
                 <li>✔ Unlimited use of gym equipment</li>
                 <li>✔ Free health and fitness assessment</li>
@@ -176,7 +176,7 @@
 
         <div class="membership-card">
             <div class="membership-title">Silver Membership</div>
-            <div class="price">₱2000 <small>/mo</small></div><br>
+            <div class="price">$2.25 <small>/mo</small></div><br>
             <ul class="features">
                 <li>✔ Unlimited use of gym equipment</li>
                 <li>✔ Free health and fitness assessment</li>
@@ -192,7 +192,7 @@
 
         <div class="membership-card">
             <div class="membership-title">Gold Membership</div>
-            <div class="price">₱3000 <small>/mo</small></div><br>
+            <div class="price">$3.25 <small>/mo</small></div><br>
             <ul class="features">
                 <li>✔ Unlimited use of gym equipment</li>
                 <li>✔ Free health and fitness assessment</li>
