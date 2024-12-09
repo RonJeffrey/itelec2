@@ -224,7 +224,7 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             <div class="row">
                 <div class="col-md-4">
                     <div class="gym-schedule">
-                        <img src="../../src/img/1a.png" alt="Facility 1">
+                        <img src="../../src/img/lobbyy.png" alt="Facility 1">
                         <div class="description">Waiting Area</div>
                     </div>
                 </div>
