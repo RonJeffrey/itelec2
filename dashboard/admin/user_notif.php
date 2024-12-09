@@ -181,4 +181,3 @@ $current_plan_display = ($current_plan !== 'You are not subscribed to any gym me
 </body>
 
 </html>
-
