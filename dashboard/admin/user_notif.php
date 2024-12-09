@@ -18,9 +18,9 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt = $admin->runQuery("SELECT * FROM transactions WHERE login_email = :email ORDER BY created_at DESC LIMIT 1");
 $stmt->execute(array(":email" => $user_data['email']));
 $user_plan = $stmt->fetch(PDO::FETCH_ASSOC);
-$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'You are not subscribe to any gym membership plan.';
+$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'You are not subscribed to any gym membership plan.';
 $current_billing_cycle = $user_plan ? htmlspecialchars($user_plan['billing_cycle']) : '';
-$current_plan_display = ($current_plan !== 'You are not subscribe to any gym membership plan.') ? "$current_plan ($current_billing_cycle)" : 'You are not subscribe to any gym membership plan.';
+$current_plan_display = ($current_plan !== 'You are not subscribed to any gym membership plan.') ? "$current_plan ($current_billing_cycle)" : 'You are not subscribed to any gym membership plan.';
 ?>
 
 <!DOCTYPE html>
@@ -31,32 +31,33 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link rel="icon" type="image/png" href="src/img/PrimeStrength.png">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Protest+Revolution&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap');
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             display: flex;
-            background-color: #f4f4f4;
             height: 100vh;
             overflow: hidden;
+            background-color: #181818;
+            color: #fff;
         }
-
         .sidebar {
             width: 250px;
-            background-color: #2c3e50;
+            background-color: rgba(0, 0, 0, 0.8);
             color: #ecf0f1;
             display: flex;
             flex-direction: column;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
         }
-
         .sidebar h2 {
             text-align: center;
             margin-bottom: 30px;
             font-size: 1.5em;
         }
-
         .sidebar a {
             color: #ecf0f1;
             text-decoration: none;
@@ -67,31 +68,9 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             display: block;
             transition: background-color 0.3s;
         }
-
         .sidebar a:hover {
-            background-color: #34495e;
+            background-color: rgba(255, 255, 255, 0.2);
         }
-
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
         .logout-button {
             background-color: #dc3545;
             border: none;
@@ -103,123 +82,95 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
             text-align: center;
             text-decoration: none;
         }
-
         .logout-button:hover {
             background-color: #c82333;
         }
-
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #fff;
+            font-family: "Red Hat Display", sans-serif;
+        }
         .content {
-            background: #fff;
+            background: #2c2c2c;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
         }
-
         .content h2 {
-            font-size: 1.2em;
+            font-size: 1.4em;
             margin-bottom: 15px;
+            color: #ff4545;
         }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .btn {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-content {
-            background-color: #fff;
-            margin: 15% auto;
-            padding: 20px;
+        .card {
+            background: #3a3a3a;
+            padding: 15px;
             border-radius: 8px;
-            width: 80%;
-            max-width: 400px;
-            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
-
-        .modal button {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
+        .card h3 {
+            color: #ff4545;
+            margin-bottom: 10px;
         }
-
-        .modal button:hover {
-            background-color: #0056b3;
+        .logo-membership {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .logo-membership img {
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            border-radius: 50%;
         }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
+        <div class="logo-membership">
+            <img src="../../src/img/PrimeStrength_BlackWhite.png" alt="Company Logo" onerror="alert('Image not found or path is incorrect')">
+        </div>
         <h2>User Dashboard</h2>
-        <a href="user_dashboard.php">Home</a>
-        <a href="user_profile.php">Profile</a>
-        <a href="plans.php">Membership Plans</a>
-        <a href="user_notif.php">Notifications</a>
-        <a href="authentication/admin-class.php?admin_signout" class="logout-button">Sign Out</a>
+        <a href="user_dashboard.php"><i class='bx bxs-home'></i> Home</a>
+        <a href="user_profile.php"><i class='bx bxs-user'></i> Profile</a>
+        <a href="plans.php"><i class='bx bx-id-card'></i> Membership Plans</a>
+        <a href="user_notif.php"><i class='bx bxs-bell'></i> Notifications</a>
+        <a href="authentication/admin-class.php?admin_signout" class="logout-button"><i class='bx bx-log-out'></i> Sign Out</a>
     </div>
 
     <div class="main-content">
         <div class="header">
-            <h1>Welcome, <?php echo htmlspecialchars(string: $user_data['email']); ?></h1>
-            <h1>Current Plan: [<?php echo $current_plan; ?>]<?php echo $current_billing_cycle; ?></h1>
+            <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?></h1>
+            <h1>Current Plan: <?php echo $current_plan_display; ?></h1>
         </div>
         <div class="content">
-            <h2>Dashboard Overview</h2>
+            <h2>Latest Notifications:</h2>
             <div class="card">
-                <p>Welcome to your dashboard. Here you can manage your profile, view notifications, and explore more
-                    features.</p>
-            </div>
-
-            <div class="card">
-                <h3>Latest Notifications:</h3>
                 <?php if (count($notifications) > 0): ?>
                     <ul>
-                        <?php
-                        foreach ($notifications as $notification) {
-                            echo '<li>';
-                            echo '<p>' . htmlspecialchars($notification['message']) . '</p>';
-                            echo '<small>Posted on: ' . $notification['created_at'] . '</small>';
-                            echo '</li>';
-                        }
-                        ?>
+                        <?php foreach ($notifications as $notification): ?>
+                            <li>
+                                <p><?php echo htmlspecialchars($notification['message']); ?></p>
+                                <small>Posted on: <?php echo $notification['created_at']; ?></small>
+                            </li>
+                        <?php endforeach; ?>
                     </ul>
                 <?php else: ?>
                     <p>No announcements at the moment.</p>
@@ -230,3 +181,4 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
 </body>
 
 </html>
+
