@@ -43,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $_SESSION['profile_update_success'] = true;
 }
+
 ?>
 
 <!DOCTYPE html>

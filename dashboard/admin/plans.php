@@ -17,6 +17,25 @@ $user_plan = $stmt->fetch(PDO::FETCH_ASSOC);
 $current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'You are not subscribe to any gym membership plan.';
 $current_billing_cycle = $user_plan ? htmlspecialchars($user_plan['billing_cycle']) : '';
 $current_plan_display = ($current_plan !== 'You are not subscribe to any gym membership plan.') ? "$current_plan ($current_billing_cycle)" : 'You are not subscribe to any gym membership plan.';
+
+$current_date = date('Y-m-d');
+
+$subscription_expired = false;
+
+if ($user_plan) {
+    $expiration_date = date('Y-m-d', strtotime($user_plan['expiration_date']));
+
+    if ($current_date > $expiration_date) {
+        $stmt = $admin->runQuery("UPDATE user SET subscription_status = 'expired' WHERE email = :email");
+        $stmt->execute(array(":email" => $user_data['email']));
+        
+        $subscription_expired = true;
+    }else {
+        $stmt = $admin->runQuery("UPDATE user SET subscription_status = 'Member' WHERE email = :email");
+        $stmt->execute(array(":email" => $user_data['email']));
+        $subscription_expired = false;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -262,7 +281,14 @@ $current_plan_display = ($current_plan !== 'You are not subscribe to any gym mem
     <div class="main-content">
         <div class="header">
             <h1>MEMBERSHIP PLANS</h1>
-            <h1>Current Plan: [<?php echo $current_plan; ?>]<?php echo $current_billing_cycle; ?></h1>
+            <h1>
+            <?php 
+            if ($subscription_expired) {
+                echo 'CURRENT PLAN: Plan Expired';
+            } else {
+                echo "[$current_plan] $current_billing_cycle";
+            }
+        ?></h1>
         </div>
         <div class="content">
             <h1>UNLOCK YOUR POTENTIAL!</h1>
