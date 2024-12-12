@@ -47,8 +47,16 @@ if (isset($data['payer_name'], $data['payer_email'], $data['amount'], $data['tra
     try {
         $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare("INSERT INTO transactions (login_email, payer_name, payer_email, amount, transaction_id, plan, billing_cycle) 
-                              VALUES (:login_email, :payer_name, :payer_email, :amount, :transaction_id, :plan, :billing_cycle)");
+        $expiration_date = date('Y-m-d', strtotime("+1 month"));
+
+        if ($billing_cycle == 'Monthly') {
+            $expiration_date = date('Y-m-d', strtotime("+1 month"));
+        } elseif ($billing_cycle == 'Annual') {
+            $expiration_date = date('Y-m-d', strtotime("+1 year"));
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO transactions (login_email, payer_name, payer_email, amount, transaction_id, plan, billing_cycle, expiration_date) 
+                              VALUES (:login_email, :payer_name, :payer_email, :amount, :transaction_id, :plan, :billing_cycle, :expiration_date)");
 
         $stmt->bindParam(':login_email', $login_email);
         $stmt->bindParam(':payer_name', $payer_name);
@@ -57,6 +65,7 @@ if (isset($data['payer_name'], $data['payer_email'], $data['amount'], $data['tra
         $stmt->bindParam(':transaction_id', $transaction_id);
         $stmt->bindParam(':plan', $plan);
         $stmt->bindParam(':billing_cycle', $billing_cycle);
+        $stmt->bindParam(':expiration_date', $expiration_date);
 
         $stmt->execute();
 

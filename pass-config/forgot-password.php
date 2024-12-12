@@ -12,14 +12,14 @@ include_once '../config/settings-configuration.php';
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1a1a1a; /* Dark background */
+            background-color: #1a1a1a;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: #f0f0f0; /* Light text color for contrast */
+            color: #f0f0f0;
         }
 
         .wrapper {
@@ -47,7 +47,7 @@ include_once '../config/settings-configuration.php';
 
         .container {
             flex: 1;
-            background: #2e2e2e; /* Darker container background */
+            background: #2e2e2e;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -59,21 +59,21 @@ include_once '../config/settings-configuration.php';
         h1 {
             font-size: 1.8em;
             margin-bottom: 20px;
-            color: #fff; /* White text for header */
+            color: #fff;
         }
 
         input[type="email"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border: 1px solid #444; /* Subtle border */
+            border: 1px solid #444;
             border-radius: 4px;
-            background-color: #444; /* Dark input background */
-            color: #f0f0f0; /* Light text for inputs */
+            background-color: #444;
+            color: #f0f0f0;
         }
 
         input[type="email"]::placeholder {
-            color: #ccc; /* Light placeholder text */
+            color: #ccc;
         }
 
         button {
@@ -94,7 +94,7 @@ include_once '../config/settings-configuration.php';
         .message {
             margin-top: 15px;
             font-size: 0.9em;
-            color: #ccc; /* Subtle text color for the message */
+            color: #ccc;
         }
 
         @media (max-width: 768px) {

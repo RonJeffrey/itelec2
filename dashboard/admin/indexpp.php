@@ -14,10 +14,28 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 $stmt = $admin->runQuery("SELECT * FROM transactions WHERE login_email = :email ORDER BY created_at DESC LIMIT 1");
 $stmt->execute(array(":email" => $user_data['email']));
 $user_plan = $stmt->fetch(PDO::FETCH_ASSOC);
-$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'No Plan';
+$current_plan = $user_plan ? htmlspecialchars($user_plan['plan']) : 'You are not subscribe to any gym membership plan.';
 $current_billing_cycle = $user_plan ? htmlspecialchars($user_plan['billing_cycle']) : '';
-$current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current_billing_cycle)" : 'No Plan';
+$current_plan_display = ($current_plan !== 'You are not subscribe to any gym membership plan.') ? "$current_plan ($current_billing_cycle)" : 'You are not subscribe to any gym membership plan.';
 
+$current_date = date('Y-m-d');
+
+$subscription_expired = false;
+
+if ($user_plan) {
+    $expiration_date = date('Y-m-d', strtotime($user_plan['expiration_date']));
+
+    if ($current_date > $expiration_date) {
+        $stmt = $admin->runQuery("UPDATE user SET subscription_status = 'expired' WHERE email = :email");
+        $stmt->execute(array(":email" => $user_data['email']));
+        
+        $subscription_expired = true;
+    }else {
+        $stmt = $admin->runQuery("UPDATE user SET subscription_status = 'Member' WHERE email = :email");
+        $stmt->execute(array(":email" => $user_data['email']));
+        $subscription_expired = false;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -251,6 +269,16 @@ $current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current
             height: auto;
             border-radius: 50%; 
         }
+        
+    .text-red {
+        color: #ef476f;
+    }
+    .subscription-expired-message {
+        color: #ff6347;
+        font-size: 1.5em;
+        text-align: center;
+        margin-top: 20px;
+    }
 </style>
 
 
@@ -259,7 +287,7 @@ $current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current
 
 <body>
     <div class="sidebar">
-    <div class="logo-membership">
+        <div class="logo-membership">
             <img src="../../src/img/PrimeStrength_BlackWhite.png" alt="Company Logo">
         </div>
         <h2>User Dashboard</h2>
@@ -268,27 +296,30 @@ $current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current
         <a href="plans.php">Membership Plans</a>
         <a href="user_notif.php">Notifications</a>
         <a href="authentication/admin-class.php?admin_signout" class="logout-button">
-    <i class="fas fa-sign-out-alt"></i> Sign Out
-</a>
-
-
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+        </a>
     </div>
 
     <div class="main-content">
         <div class="header">
             <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?></h1>
-            <h1>Current Plan: [<?php echo $current_plan; ?>]<?php echo $current_billing_cycle; ?></h1>
-
+            <h1>Current Plan: 
+        <?php 
+            if ($subscription_expired) {
+                echo 'Plan Expired';
+            } else {
+                echo "[$current_plan] $current_billing_cycle";
+            }
+        ?>
+    </h1>
         </div>
         <main id="cart-main">
             <div class="container">
                 <div class="item text-center">
                     <h3>Choose Your Subscription</h3>
                     <div class="plan-selector">
-                        <label><input type="radio" name="plan" value="Bronze" onclick="updatePrice('bronze')" checked>
-                            Bronze</label>
-                        <label><input type="radio" name="plan" value="Silver" onclick="updatePrice('silver')">
-                            Silver</label>
+                        <label><input type="radio" name="plan" value="Bronze" onclick="updatePrice('bronze')" checked> Bronze</label>
+                        <label><input type="radio" name="plan" value="Silver" onclick="updatePrice('silver')"> Silver</label>
                         <label><input type="radio" name="plan" value="Gold" onclick="updatePrice('gold')"> Gold</label>
                     </div>
                     <div class="subscription-options">
@@ -306,11 +337,15 @@ $current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current
                     </div>
                     <div id="paypal-payment-button"></div>
                 </div>
+                <?php if ($subscription_expired): ?>
+                    <div class="subscription-expired-message">
+                        Your subscription has expired. Please renew your plan to continue enjoying the services.
+                    </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>
 
-   
     <div id="success-modal" class="modal">
         <div class="modal-content">
             <h3>Success!</h3>
@@ -319,7 +354,6 @@ $current_plan_display = ($current_plan !== 'No Plan') ? "$current_plan ($current
         </div>
     </div>
 
-  
     <div id="error-modal" class="modal">
         <div class="modal-content">
             <h3>Error!</h3>

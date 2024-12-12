@@ -310,6 +310,7 @@ input:focus, select:focus {
                 <th>Amount</th>
                 <th>Plan</th>
                 <th>Billing Cycle</th>
+                <th>Expiration Date</th>
                 <th>Date</th>
             </tr>
             <?php foreach ($transaction_logs as $log): ?>
@@ -321,6 +322,7 @@ input:focus, select:focus {
                     <td><?php echo htmlspecialchars($log['amount']); ?></td>
                     <td><?php echo htmlspecialchars($log['plan']); ?></td>
                     <td><?php echo htmlspecialchars($log['billing_cycle']); ?></td>
+                    <td><?php echo htmlspecialchars($log['expiration_date']); ?></td>
                     <td><?php echo htmlspecialchars($log['created_at']); ?></td>
                 </tr>
             <?php endforeach; ?>

@@ -320,6 +320,7 @@ input:focus, select:focus {
             <th>Username</th>
             <th>Email</th>
             <th>Role</th>
+            <th>Subcription Status</th>
             <th>Actions</th>
         </tr>
         <?php if (!empty($users)): ?>
@@ -329,6 +330,7 @@ input:focus, select:focus {
                     <td><?php echo htmlspecialchars($user['username']); ?></td>
                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                     <td><?php echo htmlspecialchars($user['Type']); ?></td>
+                    <td><?php echo htmlspecialchars($user['subscription_status']); ?></td>
                     <td>
                         <button onclick="document.getElementById('editModal<?php echo $user['id']; ?>').classList.add('active');" class="btn">Edit</button>
                         <a href="?delete_id=<?php echo $user['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
