@@ -83,16 +83,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f4f4f4;
             height: 100vh;
             overflow: hidden;
+            background-color: #610000;
+
         }
 
         .sidebar {
             width: 250px;
-            background-color: #2c3e50;
+            background-color: rgba(0, 0, 0, 0.8);
             color: #ecf0f1;
             display: flex;
             flex-direction: column;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+
         }
 
         .sidebar h2 {
@@ -113,28 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .sidebar a:hover {
-            background-color: #34495e;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.5em;
-        }
 
         .logout-button {
             background-color: #dc3545;
@@ -152,45 +137,139 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #c82333;
         }
 
-        .content {
-            background: #fff;
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5));
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #f4f4f4;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            }
+
+            50% {
+                text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .content h2 {
-            font-size: 1.2em;
-            margin-bottom: 15px;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #610000;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);F
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 5px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #610000;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .form-group input {
-            width: 100%;
-            padding: 8px;
+            width: 98%;
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group input:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.8);
+            outline: none;
+            transform: scale(1.03);
         }
 
         .btn {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 15px 0;
+            background: linear-gradient(90deg, #e74c3c, #ff7675);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 0.4s ease-in-out;
             cursor: pointer;
+            border: none;
+            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            background: linear-gradient(90deg, #c0392b, #d63031);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
         }
 
         .modal {
@@ -202,16 +281,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.5s ease-in-out;
         }
 
         .modal-content {
             background-color: #fff;
             margin: 15% auto;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 15px;
             width: 80%;
             max-width: 400px;
             text-align: center;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 0.5s ease-in-out;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.5);
+            }
+
+            to {
+                transform: scale(1);
+            }
         }
 
         .modal button {
@@ -222,16 +314,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .modal button:hover {
             background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        .logo-membership img {
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
+        <div class="logo-membership">
+            <img src="../../src/img/PrimeStrength_BlackWhite.png" alt="Company Logo" onerror="alert('Image not found or path is incorrect')">
+        </div>
         <h2>User Dashboard</h2>
         <a href="user_dashboard.php">Home</a>
         <a href="user_profile.php">Profile</a>
@@ -303,11 +421,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             event.preventDefault();
             document.getElementById('successModal').style.display = 'block';
         }
-        function closeModal() {
-        document.getElementById('successModal').style.display = 'none';
-        document.getElementById('profileForm').submit();
-        }
 
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+            document.getElementById('profileForm').submit();
+        }
     </script>
 </body>
 
