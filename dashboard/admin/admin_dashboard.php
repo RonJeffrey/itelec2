@@ -16,6 +16,10 @@ if (!$users) {
     $users = [];
 }
 
+$stmt = $admin->runQuery("SELECT * FROM user WHERE id = :id");
+$stmt->execute(array(":id" => $_SESSION['adminSession']));
+$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // Fetch email configuration
 $stmt = $admin->runQuery("SELECT * FROM email_config");
 $stmt->execute();
@@ -39,6 +43,16 @@ if (isset($_POST['create_user'])) {
         ':role' => $role
     ]);
 
+    $activity = 'Created a New User';
+    $date = date('Y-m-d H:i:s');
+    $userId = $_SESSION['adminSession'];
+
+    $stmt = $admin->runQuery("INSERT INTO logs (user_id, activity, created_at) VALUES (:user_id, :activity, :created_at)");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':activity', $activity);
+    $stmt->bindParam(':created_at', $date);
+    $stmt->execute();
+
     header("Location: admin_dashboard.php");
     exit();
 }
@@ -58,6 +72,16 @@ if (isset($_POST['update_user'])) {
         ':id' => $id
     ]);
 
+    $activity = 'Updated User ID: ' . $id;
+    $date = date('Y-m-d H:i:s');
+    $userId = $_SESSION['adminSession'];
+
+    $stmt = $admin->runQuery("INSERT INTO logs (user_id, activity, created_at) VALUES (:user_id, :activity, :created_at)");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':activity', $activity);
+    $stmt->bindParam(':created_at', $date);
+    $stmt->execute();
+
     $_SESSION['update_success'] = true;
     header("Location: admin_dashboard.php");
     exit();
@@ -68,6 +92,16 @@ if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
     $stmt = $admin->runQuery("DELETE FROM user WHERE id = :id");
     $stmt->execute([':id' => $id]);
+
+    $activity = 'Removed User ID: ' . $id;
+    $date = date('Y-m-d H:i:s');
+    $userId = $_SESSION['adminSession'];
+
+    $stmt = $admin->runQuery("INSERT INTO logs (user_id, activity, created_at) VALUES (:user_id, :activity, :created_at)");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':activity', $activity);
+    $stmt->bindParam(':created_at', $date);
+    $stmt->execute();
 
     header("Location: admin_dashboard.php");
     exit();
