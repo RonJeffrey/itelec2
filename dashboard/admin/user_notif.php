@@ -116,10 +116,13 @@ if ($user_plan) {
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            background-color: #dc3545;
+            padding: 20px;
         }
+
         .header h1 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #fff;
             font-family: "Red Hat Display", sans-serif;
         }
