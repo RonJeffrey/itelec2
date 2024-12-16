@@ -83,16 +83,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f4f4f4;
             height: 100vh;
             overflow: hidden;
+            background-color: #610000;
+
         }
 
         .sidebar {
             width: 250px;
-            background-color: #2c3e50;
+            background-color: rgba(0, 0, 0, 0.8);
             color: #ecf0f1;
             display: flex;
             flex-direction: column;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+
         }
 
         .sidebar h2 {
@@ -113,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .sidebar a:hover {
-            background-color: #34495e;
+            background-color: rgba(255, 255, 255, 0.2);
         }
 
         .main-content {
@@ -122,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flex-direction: column;
             padding: 20px;
             overflow-y: auto;
+            background-color: #610000;
         }
 
         .header {
@@ -134,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .header h1 {
             margin: 0;
             font-size: 1.5em;
+            color: white;
         }
 
         .logout-button {
@@ -181,16 +187,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .btn {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #e74c3c;
+            color: white;
+            text-align: center;
+            text-decoration: none;
             border-radius: 5px;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #c0392b;
+            transform: scale(1.05);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .modal {
@@ -227,11 +239,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .modal button:hover {
             background-color: #0056b3;
         }
+
+        .logo-membership {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .logo-membership img {
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            border-radius: 50%;
+        }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
+    <div class="logo-membership">
+            <img src="../../src/img/PrimeStrength_BlackWhite.png" alt="Company Logo" onerror="alert('Image not found or path is incorrect')">
+        </div>
         <h2>User Dashboard</h2>
         <a href="user_dashboard.php">Home</a>
         <a href="user_profile.php">Profile</a>
