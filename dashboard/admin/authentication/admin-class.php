@@ -23,7 +23,30 @@ class ADMIN
         $this->conn = $database->dbConnection();
 
     }
+    
+    private function generateEmailTemplate($email, $otp)
+    {
+        return "<html><body style='font-family: Arial, sans-serif; color: #333;'>
+                <div style='text-align: center; padding: 20px; border: 1px solid #ddd; background-color: #fff;'>
+                    <h1 style='color: maroon;'>OTP Verification</h1>
+                    <p style='color: black;'>Hello, <strong>$email</strong></p>
+                    <p style='font-size: 18px;'><strong>Your OTP is: <span style='color: red;'>$otp</span></strong></p>
+                    <p style='color: gray;'>Please do not share it with anyone.</p>
+                </div>
+            </body></html>";
+    }
 
+    private function generateWelcomeTemplate($email)
+    {
+        return "<html><body style='font-family: Arial, sans-serif; color: #333;'>
+                <div style='text-align: center; padding: 20px; border: 1px solid #ddd; background-color: #fff;'>
+                    <h1 style='color: maroon;'>Welcome</h1>
+                    <p style='color: black;'>Hello, <strong>$email</strong></p>
+                    <p style='font-size: 18px;'>Thank you for joining <span style='color: maroon;'>PrimeStrength</span>!</p>
+                </div>
+            </body></html>";
+    }
+    
     public function sendOtp($otp, $email)
     {
         if ($email == NULL) {
@@ -40,68 +63,8 @@ class ADMIN
             } else {
                 $_SESSION['OTP'] = $otp;
 
-                $subject = "OTP VERIFICATION";
-                $message = "
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset='UTF-8'>
-                        <title>OTP Verification</title>
-                        <style>
-                        body{
-                        font-family: Arial, sans-serif;
-                        background-color: #f5f5f5;
-                        margin:0;
-                        padding:0;
-                        }
-                        .container{
-                            max-width:600px;
-                            margin: 0 auto;
-                            padding: 30px;
-                            background-color: #ffffff;
-                            border-radius: 4px;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        }
-                        h1{
-                            color: #333333;
-                            font-size: 24px;
-                            margin-bottom: 20px;
-                        }
-                        p{
-                            color: #666666;
-                            font-size: 16px;
-                            margin-bottom: 10px;
-                        }
-                        .button{
-                            display: inline-block;
-                            padding: 12px 24px;
-                            background-color: #0088cc;
-                            color: #ffffff;
-                            text-decoration: none;
-                            border-radius: 4px;
-                            font-size: 16px;
-                            margin-top: 20px;
-                        }
-                        .logo{
-                            display: block;
-                            text-align: center;
-                            margin-bottom: 30px;
-                        }
-                        </style>
-                    </head>
-                    <body>
-                    <div class='container'>
-                        <div class='logo'>
-                        <img src='cid:logo' alt='Logo' width='150'>
-                        </div>
-                        <h1>OTP Verification</h1>
-                        <p>Hello, $email</p>
-                        <p>Your OTP is: $otp</p>
-                        <p>If you didn't request an OTP, Please ignore this email.</p>
-                        <p>Thank you!</p>
-                    </div>
-                    </body>
-                    </html>";
+                $subject = "OTP VERIFICATION"; 
+                $message = $this->generateEmailTemplate($email, $otp);
 
                 $this->send_email($email, $message, $subject, $this->smtp_email, $this->smtp_password);
                 echo "<script>alert('We sent the OTP to $email'); window.location.href = '../../../verify-otp.php';</script>";
@@ -118,69 +81,10 @@ class ADMIN
             $this->addAdmin($csrf_token, $username, $email, $password);
 
             $subject = "VERIFICATION SUCCESS";
-            $message = "
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset='UTF-8'>
-                        <title>OTP Verification Success</title>
-                        <style>
-                        body{
-                        font-family: Arial, sans-serif;
-                        background-color: #f5f5f5;
-                        margin:0;
-                        padding:0;
-                        }
-                        .container{
-                            max-width:600px;
-                            margin: 0 auto;
-                            padding: 30px;
-                            background-color: #ffffff;
-                            border-radius: 4px;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                        }
-                        h1{
-                            color: #333333;
-                            font-size: 24px;
-                            margin-bottom: 20px;
-                        }
-                        p{
-                            color: #666666;
-                            font-size: 16px;
-                            margin-bottom: 10px;
-                        }
-                        .button{
-                            display: inline-block;
-                            padding: 12px 24px;
-                            background-color: #0088cc;
-                            color: #ffffff;
-                            text-decoration: none;
-                            border-radius: 4px;
-                            font-size: 16px;
-                            margin-top: 20px;
-                        }
-                        .logo{
-                            display: block;
-                            text-align: center;
-                            margin-bottom: 30px;
-                        }
-                        </style>
-                    </head>
-                    <body>
-                    <div class='container'>
-                        <div class='logo'>
-                        <img src='cid:logo' alt='Logo' width='150'>
-                        </div>
-                        <h1>Welcome</h1>
-                        <p>Hello, <strong>$email</strong></p>
-                        <p>Welcome to Ron System</p>
-                        <p>If you did not sign up for an account, you can safely ignore this email.</p>
-                        <p>Thank you!</p>
-                    </div>
-                    </body>
-                    </html>";
+            $message = $this->generateWelcomeTemplate($email);
 
-            $this->send_email($email, $message, $subject, $this->smtp_email, $this->smtp_password);
+            $this->send_email($email, $message, $subject);
+
             echo "<script>alert('Thank you!'); window.location.href = '../../../';</script>";
 
             unset($_SESSION['not_verify_username']);
@@ -262,7 +166,7 @@ class ADMIN
                     }
                     exit;
                 } else {
-                    echo "<script>alert('Password is incorrect.'); window.location.href = '../../../';</script>";
+                    echo "<script>alert('Password is incorrect.'); window.location.href = '../../../login.php';</script>";
                     exit;
                 }
             } else {
@@ -282,7 +186,7 @@ class ADMIN
         exit;
     }
 
-    function send_email($email, $message, $subject, $smtp_email, $smtp_password)
+    private function send_email($email, $message, $subject)
     {
         $mail = new PHPMailer();
         $mail->isSMTP();
@@ -291,14 +195,15 @@ class ADMIN
         $mail->SMTPSecure = 'tls';
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 587;
-        $mail->isHTML();
+        $mail->isHTML(true);
         $mail->addAddress($email);
-        $mail->Username = $smtp_email;
-        $mail->Password = $smtp_password;
-        $mail->setFrom($smtp_email, "Ron");
+        $mail->Username = $this->smtp_email;
+        $mail->Password = $this->smtp_password;
+        $mail->setFrom($this->smtp_email, "PrimeStrength Support");
         $mail->Subject = $subject;
-        $mail->msgHTML($message);
-        $mail->Send();
+        $mail->Body = $message;
+
+        return $mail->send();
     }
 
     public function logs($activity, $user_id)

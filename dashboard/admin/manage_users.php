@@ -12,6 +12,10 @@ if (!$admin->isUserLoggedIn()) {
     $admin->redirect('../../');
 }
 
+$stmt = $admin->runQuery("SELECT * FROM user WHERE id = :id");
+$stmt->execute(array(":id" => $_SESSION['adminSession']));
+$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
 $stmt = $admin->runQuery("SELECT * FROM user");
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -32,6 +36,157 @@ if (isset($_POST['logout'])) {
     session_destroy();
     header("Location: ../../");
     exit();
+}
+
+function announcementTemplate($announcement)
+{
+    return "<html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            .container {
+                width: 100%;
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #ffffff;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header h1 {
+                color: #e74c3c;
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.5;
+                color: #333;
+            }
+            .announcement {
+                font-size: 18px;
+                color: #e74c3c;
+                font-weight: bold;
+                margin: 20px 0;
+                padding: 15px;
+                border: 1px solid #e74c3c;
+                border-radius: 5px;
+                background-color: #f9f9f9;
+            }
+            .footer {
+                text-align: center;
+                font-size: 12px;
+                color: #888;
+                margin-top: 30px;
+            }
+            .footer p {
+                margin: 5px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>GYM ANNOUNCEMENT</h1>
+            </div>
+            <div class='content'>
+                <p>We have an important update for you:</p>
+                <div class='announcement'>
+                    <p><span style='color: red;'>$announcement</span></p>
+                </div>
+                <p>We hope this information helps, and we appreciate your continued participation in our gym community!</p>
+            </div>
+            <div class='footer'>
+                <p>If you have any questions or need assistance, feel free to contact us.</p>
+                <p>Thank you for being part of our community!</p>
+            </div>
+        </div>
+    </body>
+    </html>";
+}
+function messageTemplate($message)
+{
+    return "<html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+            }
+            .container {
+                width: 100%;
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #ffffff;
+                padding: 30px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header h1 {
+                color: #e74c3c;
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.5;
+                color: #333;
+            }
+            .notice {
+                font-size: 18px;
+                color: #e74c3c;
+                font-weight: bold;
+                margin: 20px 0;
+                padding: 15px;
+                border: 1px solid #e74c3c;
+                border-radius: 5px;
+                background-color: #f9f9f9;
+            }
+            .footer {
+                text-align: center;
+                font-size: 12px;
+                color: #888;
+                margin-top: 30px;
+            }
+            .footer p {
+                margin: 5px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='header'>
+                <h1>NOTICE!</h1>
+            </div>
+            <div class='content'>
+                <p>We have an important update for you:</p>
+                <div class='notice'>
+                    <p><span style='color: red;'>$message</span></p>
+                </div>
+                <p>We hope this information helps, and we appreciate your continued participation in our gym community!</p>
+            </div>
+            <div class='footer'>
+                <p>If you have any questions or need assistance, feel free to contact us.</p>
+                <p>Thank you for being part of our community!</p>
+            </div>
+        </div>
+    </body>
+    </html>";
 }
 
 // Send Announcement to All Users
@@ -64,7 +219,7 @@ if (isset($_POST['send_announcement'])) {
                 $mail->setFrom($email, 'Admin');
                 $mail->isHTML(true);
                 $mail->Subject = 'Announcement from Admin';
-                $mail->Body = $announcement;
+                $mail->Body = announcementTemplate($announcement);
 
                 foreach ($users as $user) {
                     $mail->addAddress($user['email']);
@@ -119,7 +274,7 @@ if (isset($_POST['send_individual'])) {
                 $mail->setFrom($email, 'Admin');
                 $mail->isHTML(true);
                 $mail->Subject = 'Message from Admin';
-                $mail->Body = $message;
+                $mail->Body = messageTemplate($message);
 
                 $mail->addAddress($recipientEmail);
 
@@ -133,6 +288,36 @@ if (isset($_POST['send_individual'])) {
         }
     }
 }
+
+// Remove Announcement
+if (isset($_POST['remove_announcement'])) {
+    $announcementId = $_POST['announcement_id'];
+
+    if (empty($announcementId)) {
+        echo "<script>alert('Announcement ID cannot be empty!');</script>";
+    } else {
+        // Delete the announcement from the notifications table
+        $stmt = $admin->runQuery("DELETE FROM notifications WHERE id = :id");
+        $stmt->bindParam(':id', $announcementId);
+        $stmt->execute();
+
+        // Log the removal action in the logs table
+        $activity = 'Removed announcement ID: ' . $announcementId;
+        $date = date('Y-m-d H:i:s');  // Get the current timestamp
+
+        $userId = $_SESSION['adminSession'];
+
+        // Insert into logs table
+        $stmt = $admin->runQuery("INSERT INTO logs (user_id, activity, created_at) VALUES (:user_id, :activity, :created_at)");
+        $stmt->bindParam(':user_id', $userId);
+        $stmt->bindParam(':activity', $activity);
+        $stmt->bindParam(':created_at', $date);
+        $stmt->execute();
+
+        echo "<script>alert('Announcement removed and logged successfully!');</script>";
+    }
+}
+
 
 ?>
 
@@ -253,6 +438,7 @@ if (isset($_POST['send_individual'])) {
             flex-direction: column;
             align-items: center;
         }
+        
 
         textarea,
         select {
@@ -395,7 +581,59 @@ if (isset($_POST['send_individual'])) {
             <textarea name="message" placeholder="Write your message here..." rows="5"></textarea>
             <button type="submit" name="send_individual">Send Email</button>
         </form>
-    </div>
-</body>
+        <h1>Delete Announcement</h1>
+<form action="">
+    <table border="1" 
+    style="width: 70%; 
+    border-collapse: collapse; 
+    margin-bottom: 20px;
+    animation: fadeIn 0.8s ease">
+        <thead>
+            <tr style="background-color: #e74c3c; 
+            color: #fff; 
+            font-weight: bold; ">
+                <th>ID</th>
+                <th>Message</th>
+                <th>Timestamp</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $stmt = $admin->runQuery("SELECT id, message, created_at FROM notifications ORDER BY created_at DESC");
+            $stmt->execute();
+            $notif = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($notif as $notification) {
+                $id = htmlspecialchars($notification['id']);
+                $message = htmlspecialchars($notification['message']);
+                $created_at = htmlspecialchars($notification['created_at']);
+                
+                echo "<tr>
+                        <td>$id</td>
+                        <td>$message</td>
+                        <td>$created_at</td>
+                        <td>
+                            <form method='POST' action=''>
+                                <input type='hidden' name='announcement_id' value='$id'>
+                                <button type='submit' name='remove_announcement'>Remove</button>
+                            </form>
+                        </td>
+                    </tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</form>
+</form>
+</div>
 
+<?php
+if (isset($_POST['remove_announcement'])) {
+    $log_id = $_POST['announcement_id'];
+    $stmt = $admin->runQuery("DELETE FROM logs WHERE id = :id");
+    $stmt->bindParam(':id', $log_id);
+    $stmt->execute();
+}
+?>
+</body>
 </html>

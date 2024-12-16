@@ -28,7 +28,7 @@ if (!$emailConfig) {
 if (isset($_POST['create_user'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = md5($_POST['password']);
     $role = $_POST['role'];
 
     $stmt = $admin->runQuery("INSERT INTO user (username, email, password, Type) VALUES (:username, :email, :password, :role)");
@@ -299,6 +299,7 @@ input:focus, select:focus {
 </div>
 
 <div class="content">
+    
     <h1>User Management</h1>
 
     <form method="POST" action="">

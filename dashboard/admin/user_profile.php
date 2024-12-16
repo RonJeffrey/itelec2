@@ -17,9 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $updated_age = $_POST['age'];
     $updated_weight = $_POST['weight'];
     $updated_height = $_POST['height'];
+    $updated_birthdate = $_POST['birthdate'];
     $updated_address = $_POST['address'];
     $updated_contact_number = $_POST['contact_number'];
 
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $updated_birthdate)) {
+        die("Invalid birthdate format. Please use YYYY-MM-DD.");
+    }
+
+    // Calculate BMI
     if (is_numeric($updated_weight) && is_numeric($updated_height) && $updated_height > 0) {
         $height_in_meters = $updated_height / 100;
         $bmi = $updated_weight / ($height_in_meters * $height_in_meters);
@@ -28,21 +34,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bmi = null;
     }
 
-    $stmt = $admin->runQuery("UPDATE user SET username = :username, email = :email, age = :age, weight = :weight, height = :height, bmi = :bmi, address = :address, contact_number = :contact_number WHERE id = :id");
-    $stmt->execute(array(
-        ":username" => $updated_name,
-        ":email" => $updated_email,
-        ":age" => $updated_age,
-        ":weight" => $updated_weight,
-        ":height" => $updated_height,
-        ":bmi" => $bmi,
-        ":address" => $updated_address,
-        ":contact_number" => $updated_contact_number,
-        ":id" => $_SESSION['adminSession']
-    ));
-
-    $_SESSION['profile_update_success'] = true;
+    try {
+        $stmt = $admin->runQuery("UPDATE user SET 
+            username = :username, 
+            email = :email, 
+            age = :age, 
+            weight = :weight, 
+            height = :height, 
+            bmi = :bmi, 
+            birthdate = :birthdate, 
+            address = :address, 
+            contact_number = :contact_number 
+            WHERE id = :id");
+        $stmt->execute(array(
+            ":username" => $updated_name,
+            ":email" => $updated_email,
+            ":age" => $updated_age,
+            ":weight" => $updated_weight,
+            ":height" => $updated_height,
+            ":bmi" => $bmi,
+            ":birthdate" => $updated_birthdate,
+            ":address" => $updated_address,
+            ":contact_number" => $updated_contact_number,
+            ":id" => $_SESSION['adminSession']
+        ));
+        $_SESSION['profile_update_success'] = true;
+    } catch (Exception $e) {
+        die("Error updating profile: " . $e->getMessage());
+    }
 }
+
 
 ?>
 
@@ -280,15 +301,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>
         function showModal(event) {
             event.preventDefault();
-            location.reload();
             document.getElementById('successModal').style.display = 'block';
         }
-
         function closeModal() {
-            document.getElementById('successModal').style.display = 'none';
-            location.reload();
-            document.getElementById('profileForm').submit();
+        document.getElementById('successModal').style.display = 'none';
+        document.getElementById('profileForm').submit();
         }
+
     </script>
 </body>
 

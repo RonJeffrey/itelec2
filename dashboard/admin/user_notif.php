@@ -182,7 +182,7 @@ if ($user_plan) {
             if ($subscription_expired) {
                 echo 'CURRENT PLAN: Plan Expired';
             } else {
-                echo "[$current_plan] $current_billing_cycle";
+                echo "CURRENT PLAN: [$current_plan] $current_billing_cycle";
             }
         ?>
         </h1>

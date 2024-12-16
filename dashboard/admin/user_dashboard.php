@@ -234,7 +234,7 @@ if ($user_plan) {
     <div class="main-content">
         <div class="header">
             <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?></h1>
-            <h1><?php if ($subscription_expired) { echo 'CURRENT PLAN: Plan Expired'; } else { echo "[$current_plan] $current_billing_cycle"; } 
+            <h1><?php if ($subscription_expired) { echo 'CURRENT PLAN: Plan Expired'; } else { echo "CURRENT PLAN: [$current_plan] $current_billing_cycle"; } 
             ?></h1>
         </div>
 
