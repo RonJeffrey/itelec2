@@ -240,6 +240,15 @@ if (isset($_POST['send_announcement'])) {
             echo "<script>alert('Email configuration not set up!');</script>";
         }
     }
+    $activity = 'Created a new Announcement';
+    $date = date('Y-m-d H:i:s');
+    $userId = $_SESSION['adminSession'];
+
+    $stmt = $admin->runQuery("INSERT INTO logs (user_id, activity, created_at) VALUES (:user_id, :activity, :created_at)");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':activity', $activity);
+    $stmt->bindParam(':created_at', $date);
+    $stmt->execute();
 }
 
 // Send Individual Email
@@ -287,6 +296,16 @@ if (isset($_POST['send_individual'])) {
             echo "<script>alert('Email configuration not set up!');</script>";
         }
     }
+    
+    $activity = 'Created a notice to:' . $recipientEmail;
+    $date = date('Y-m-d H:i:s');
+    $userId = $_SESSION['adminSession'];
+
+    $stmt = $admin->runQuery("INSERT INTO logs (user_id, activity, created_at) VALUES (:user_id, :activity, :created_at)");
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':activity', $activity);
+    $stmt->bindParam(':created_at', $date);
+    $stmt->execute();
 }
 
 // Remove Announcement
@@ -438,7 +457,6 @@ if (isset($_POST['remove_announcement'])) {
             flex-direction: column;
             align-items: center;
         }
-        
 
         textarea,
         select {
