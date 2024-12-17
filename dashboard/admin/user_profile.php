@@ -25,13 +25,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Invalid birthdate format. Please use YYYY-MM-DD.");
     }
 
-    // Calculate BMI
     if (is_numeric($updated_weight) && is_numeric($updated_height) && $updated_height > 0) {
         $height_in_meters = $updated_height / 100;
         $bmi = $updated_weight / ($height_in_meters * $height_in_meters);
         $bmi = round($bmi, 1);
     } else {
         $bmi = null;
+    }
+
+    $profile_picture = $user_data['profile_picture'];
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['profile_picture']['tmp_name'];
+        $file_name = basename($_FILES['profile_picture']['name']);
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (in_array($file_ext, $allowed_ext)) {
+            $new_file_name = uniqid('profile_', true) . "." . $file_ext;
+            $upload_dir = __DIR__ . "/uploads/";
+
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+
+            move_uploaded_file($file_tmp, $upload_dir . $new_file_name);
+            $profile_picture = $new_file_name;
+        } else {
+            die("Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.");
+        }
     }
 
     try {
@@ -44,7 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             bmi = :bmi, 
             birthdate = :birthdate, 
             address = :address, 
-            contact_number = :contact_number 
+            contact_number = :contact_number,
+            profile_picture = :profile_picture
             WHERE id = :id");
         $stmt->execute(array(
             ":username" => $updated_name,
@@ -56,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ":birthdate" => $updated_birthdate,
             ":address" => $updated_address,
             ":contact_number" => $updated_contact_number,
+            ":profile_picture" => $profile_picture,
             ":id" => $_SESSION['adminSession']
         ));
         $_SESSION['profile_update_success'] = true;
@@ -63,8 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Error updating profile: " . $e->getMessage());
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -364,7 +385,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="content">
             <h2>Update Your Profile</h2>
-            <form id="profileForm" method="POST" onsubmit="showModal(event)">
+            <form id="profileForm" method="POST" enctype="multipart/form-data" onsubmit="showModal(event)">
                 <div class="form-group">
                     <label for="name">Full Name</label>
                     <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($user_data['username'] ?? ''); ?>" required>
@@ -373,7 +394,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="email">Email Address</label>
                     <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user_data['email'] ?? ''); ?>" required>
                 </div>
-
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture</label>
+                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
+                </div>
+                <?php if (!empty($user_data['profile_picture'])): ?>
+                    <div>
+                        <img src="uploads/<?php echo htmlspecialchars($user_data['profile_picture']); ?>" 
+                             alt="Profile Picture" 
+                             style="max-width: 350px; border-radius: 70%; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
+                    </div>
+                <?php endif ?>
                 <h4>Others</h4>
                 <div class="form-group">
                     <label for="age">Age</label>
