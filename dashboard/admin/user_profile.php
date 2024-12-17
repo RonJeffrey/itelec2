@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 1.8em;
             margin-bottom: 20px;
             color: #610000;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);F
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
         }
 
         @keyframes bounce {
