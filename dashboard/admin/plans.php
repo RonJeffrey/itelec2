@@ -98,11 +98,14 @@ if ($user_plan) {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1px;
+            margin-bottom: 15px;
+            background-color: #dc3545;
+            padding: 15px;
         }
+
         .header h1 {
             margin: 0;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #fff;
             font-family: "Red Hat Display", sans-serif;
             font-optical-sizing: auto;
