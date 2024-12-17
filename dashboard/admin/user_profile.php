@@ -385,6 +385,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="content">
             <h2>Update Your Profile</h2>
+                <?php if (!empty($user_data['profile_picture'])): ?>
+                    <div>
+                        <img src="uploads/<?php echo htmlspecialchars($user_data['profile_picture']); ?>" 
+                             alt="Profile Picture" 
+                             style="max-width: 350px; border-radius: 70%; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
+                    </div>
+                <?php endif ?>
+                <div class="form-group">
+                    <label for="profile_picture">Profile Picture</label>
+                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
+                </div>
             <form id="profileForm" method="POST" enctype="multipart/form-data" onsubmit="showModal(event)">
                 <div class="form-group">
                     <label for="name">Full Name</label>
@@ -394,17 +405,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="email">Email Address</label>
                     <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user_data['email'] ?? ''); ?>" required>
                 </div>
-                <div class="form-group">
-                    <label for="profile_picture">Profile Picture</label>
-                    <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
-                </div>
-                <?php if (!empty($user_data['profile_picture'])): ?>
-                    <div>
-                        <img src="uploads/<?php echo htmlspecialchars($user_data['profile_picture']); ?>" 
-                             alt="Profile Picture" 
-                             style="max-width: 350px; border-radius: 70%; box-shadow: 0 4px 8px rgba(0,0,0,0.4);">
-                    </div>
-                <?php endif ?>
                 <h4>Others</h4>
                 <div class="form-group">
                     <label for="age">Age</label>
